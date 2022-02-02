@@ -47,16 +47,28 @@ test_case['target'].iloc[0]
 
 
 
-
-
-def plot_number_of_views(input_df: pd.DataFrame, video_id: str) -> None:
+def plot_trending_date_change_for_col(
+    input_df: pd.DataFrame,
+    col: str, 
+    video_id: str
+    ) -> None:
+    """ Function to plot the daily changes (based on 'Trending_Date') for
+    a numeric column ('col').
+    """
     plt.figure(figsize=(10, 10))
-    cols=['trending_date', 'target']
+    cols=['trending_date', col]
     video_df = input_df[input_df['video_id'] == video_id][cols]
-    sns.lineplot(data=video_df, x='trending_date', y='target')
+    sns.lineplot(data=video_df, x='trending_date', y=col)
     plt.xticks(rotation=40)
-    plt.title('Change of Target per day for VideoId: \'{0}\''.format(video_id))
+    plt.title(
+        'Change of {0} per day for VideoId: \'{1}\''.format(col, video_id)
+    )
+    plt.show()
 
 
-plot_number_of_views(input_df=youtube_df_train, video_id='zzd4ydafGR0')
+plot_trending_date_change_for_col(
+    input_df=youtube_df_train, 
+    video_id='zzd4ydafGR0', 
+    col='target'
+    )
 
