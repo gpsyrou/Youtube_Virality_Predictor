@@ -1,4 +1,5 @@
-
+""" Collection of function used to apply transformations on columns/features
+"""
 
 def is_title_full_capital(video_title: str, threshold: float = 0.7) -> bool:
     """ Identifies if a given video title consist only by capital letters.

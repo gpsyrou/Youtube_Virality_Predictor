@@ -7,7 +7,8 @@ sns.set_style('dark')
 from helpers.dataframe import print_dataset_size
 from helpers.visualize import (
     plot_trending_date_change_for_col, 
-    plot_change_in_views_and_likes
+    plot_change_in_views_and_likes,
+    visualize_categorical_feature
     )
 from features.feature_preprocess import is_title_full_capital
 
@@ -78,4 +79,16 @@ plot_change_in_views_and_likes(
     )
 
 youtube_df_train['title'][0]
+
+youtube_df_train.groupby('comments_disabled')['target'].mean()
+youtube_df_train.groupby('has_thumbnail')['target'].mean()
+
+visualize_categorical_feature(input_df=youtube_df_train, col_name='has_thumbnail', hue=None, return_counts=True)
+
+
+
+
+
+
+
 
