@@ -4,7 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 sns.set_style('dark')
-from helpers.dataframe import print_dataset_size
+from helpers.df_func import print_dataset_size
 from helpers.visualize import (
     plot_trending_date_change_for_col, 
     plot_change_in_views_and_likes,
