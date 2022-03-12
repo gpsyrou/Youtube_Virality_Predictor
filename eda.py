@@ -10,7 +10,7 @@ from helpers.visualize import (
     plot_change_in_views_and_likes,
     visualize_categorical_feature
     )
-from features.feature_preprocess import is_title_full_capital
+from features.feature_preprocess import is_title_full_capital, extract_tags, get_tag_size
 
 project_path = '/Users/georgiosspyrou/Desktop/GitHub/Projects/Youtube_Likes_Predictor'
 data_folder = 'Data'
@@ -86,8 +86,8 @@ youtube_df_train.groupby('has_thumbnail')['target'].mean()
 visualize_categorical_feature(input_df=youtube_df_train, col_name='has_thumbnail', hue=None, return_counts=True)
 
 
-
-
+youtube_df_train['tag_list'] = youtube_df_train['tags'].apply(lambda row: extract_tags(row))
+youtube_df_train['tag_size'] = youtube_df_train['tags'].apply(lambda row: get_tag_size(row))
 
 
 
