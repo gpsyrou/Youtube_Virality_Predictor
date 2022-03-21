@@ -11,7 +11,6 @@ from bs4 import (BeautifulSoup,
 
 
 
-
 def url_to_bs4(target_url: str) -> BeautifulSoup:
     """
     Given a website link (URL), retrieve the corresponding website in an html
@@ -34,13 +33,10 @@ def url_to_bs4(target_url: str) -> BeautifulSoup:
 
 
 
-
 test = url_to_bs4(target_url='https://youtu.be/X6DIc_iQd9I')
 
 
-
-
-test.find_all('div')
+test.find_all("div")
 
 
 
