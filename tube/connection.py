@@ -12,6 +12,8 @@ from bs4 import (BeautifulSoup,
 
 
 class YoutubeAnalyzer:
+    """ Class to retrieve and analyzer information of Youtube videos.
+    """
     def __init__(self, video_url: str):
         self.video_url = video_url
         self.video_bsoup = self.url_to_bs4(video_url=video_url)
@@ -19,12 +21,12 @@ class YoutubeAnalyzer:
 
     def url_to_bs4(self, video_url: str) -> BeautifulSoup:
         """
-        Given a website link (URL), retrieve the corresponding website in an html
-        format.
+        Given a website link (URL), retrieve the corresponding website in an 
+        html format.
         Parameters
         ----------
         video_url : str
-            URL of the webpage that will be transformed to a BeautifulSoup object.
+            URL of the webpage that will be transformed to a BeautifulSoup obj.
         """
         #print('Attempting to retrieve HTML object for {0}'.format(video_url))
         request = urllib.request.urlopen(video_url)
@@ -46,23 +48,59 @@ class YoutubeAnalyzer:
   
     def get_current_number_of_views(
             self, 
-            views_map={'itemprop': 'interactionCount'}
-    ) -> int:
+            views_map={'itemprop': 'interactionCount'}) -> int:
         views_tags = self.video_bsoup.find_all('meta', attrs=views_map)
         number_of_views = int(views_tags[0].get('content'))
-        return number_of_views
+        return self.number_of_views
 
 
     def get_video_title(self, title_map={'name': 'title'}) -> str:
         title_tags = self.video_bsoup.find_all('meta', attrs=title_map)
         title = title_tags[0].get('content')
-        return title
+        return self.title
 
+    def get_video_description(
+            self, 
+            descr_map={'property': 'og:description'}) -> str:
+        description = self.video_bsoup.find('meta', attrs=descr_map)
+        description = description.get('content')
+        return self.description 
 
+    def get_thumbnail_link(self, thumbn_map={'property': 'og:image'}) -> str:
+        thumbnail = self.video_bsoup.find('meta', attrs=thumbn_map)
+        thumbnail = thumbnail.get('content')
+        return self.thumbnail 
 
+    
+    def get_channel_id(self, channel_map={'itemprop': 'channelId'}) -> str:
+        channel_id = self.video_bsoup.find('meta', attrs=channel_map)
+        channel_id = channel_id.get('content')
+        return self.channel_id
+    
+    def get_video_id(self, video_id_map={'itemprop': 'videoId'}) -> str:
+        video_id = self.video_bsoup.find('meta', attrs=video_id_map)
+        video_id = video_id.get('content')
+        return self.video_id
+    
+    
+    def get_video_duration(self):
+        pass
+    
+    
+    def get_published_date(self):
+        pass
+    
+    def get_upload_date(self):
+        pass
+    
+    def get_video_genre(self):
+        pass
 
+    
 pryda_loving_you = YoutubeAnalyzer(video_url='https://youtu.be/iByQSaWTR1g')
 
 pryda_loving_you._get_video_url()
 pryda_loving_you.get_current_number_of_views()
 pryda_loving_you.get_video_title()
+pryda_loving_you.get_video_description()
+pryda_loving_you.get_thumbnail_link()
