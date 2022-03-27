@@ -48,12 +48,15 @@ class YoutubeAnalyzer:
             self, 
             views_map={'itemprop': 'interactionCount'}
     ) -> int:
-        number_of_views = self.video_bsoup.find_all('meta', attrs=views_map)[0].get('content')
+        views_tags = self.video_bsoup.find_all('meta', attrs=views_map)
+        number_of_views = int(views_tags[0].get('content'))
         return number_of_views
 
 
     def get_video_title(self, title_map={'name': 'title'}) -> str:
-        return self.video_bsoup.find_all('meta', attrs=title_map)[0].get('content')
+        title_tags = self.video_bsoup.find_all('meta', attrs=title_map)
+        title = title_tags[0].get('content')
+        return title
 
 
 
@@ -61,4 +64,5 @@ class YoutubeAnalyzer:
 pryda_loving_you = YoutubeAnalyzer(video_url='https://youtu.be/iByQSaWTR1g')
 
 pryda_loving_you._get_video_url()
+pryda_loving_you.get_current_number_of_views()
 pryda_loving_you.get_video_title()
