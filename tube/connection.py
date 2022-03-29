@@ -50,36 +50,36 @@ class YoutubeAnalyzer:
             self, 
             views_map={'itemprop': 'interactionCount'}) -> int:
         views_tags = self.video_bsoup.find_all('meta', attrs=views_map)
-        number_of_views = int(views_tags[0].get('content'))
+        self.number_of_views = int(views_tags[0].get('content'))
         return self.number_of_views
 
 
     def get_video_title(self, title_map={'name': 'title'}) -> str:
         title_tags = self.video_bsoup.find_all('meta', attrs=title_map)
-        title = title_tags[0].get('content')
+        self.title = title_tags[0].get('content')
         return self.title
 
     def get_video_description(
             self, 
             descr_map={'property': 'og:description'}) -> str:
-        description = self.video_bsoup.find('meta', attrs=descr_map)
-        description = description.get('content')
+        self.description = self.video_bsoup.find('meta', attrs=descr_map)
+        self.description = self.description.get('content')
         return self.description 
 
     def get_thumbnail_link(self, thumbn_map={'property': 'og:image'}) -> str:
-        thumbnail = self.video_bsoup.find('meta', attrs=thumbn_map)
-        thumbnail = thumbnail.get('content')
+        self.thumbnail = self.video_bsoup.find('meta', attrs=thumbn_map)
+        self.thumbnail = self.thumbnail.get('content')
         return self.thumbnail 
 
     
     def get_channel_id(self, channel_map={'itemprop': 'channelId'}) -> str:
-        channel_id = self.video_bsoup.find('meta', attrs=channel_map)
-        channel_id = channel_id.get('content')
+        self.channel_id = self.video_bsoup.find('meta', attrs=channel_map)
+        self.channel_id = self.channel_id.get('content')
         return self.channel_id
     
     def get_video_id(self, video_id_map={'itemprop': 'videoId'}) -> str:
-        video_id = self.video_bsoup.find('meta', attrs=video_id_map)
-        video_id = video_id.get('content')
+        self.video_id = self.video_bsoup.find('meta', attrs=video_id_map)
+        self.video_id = self.video_id.get('content')
         return self.video_id
     
     
