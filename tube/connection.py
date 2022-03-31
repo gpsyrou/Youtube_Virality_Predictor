@@ -1,6 +1,6 @@
 
 import pandas as pd
-import urllib
+import urllib.request
 import time
 import re
 from dateutil.parser import isoparse
@@ -38,7 +38,7 @@ class YoutubeAnalyzer:
             return response_html
 
 
-    def _show_meta_content_tags(self) -> element.ResultSet:
+    def __meta_content_tags__(self) -> element.ResultSet:
         return self.video_bsoup.find_all('meta')
 
       
@@ -100,6 +100,7 @@ class YoutubeAnalyzer:
 pryda_loving_you = YoutubeAnalyzer(video_url='https://youtu.be/iByQSaWTR1g')
 
 pryda_loving_you._get_video_url()
+pryda_loving_you.__meta_content_tags__()
 pryda_loving_you.get_current_number_of_views()
 pryda_loving_you.get_video_title()
 pryda_loving_you.get_video_description()
