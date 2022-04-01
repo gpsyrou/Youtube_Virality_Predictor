@@ -93,9 +93,10 @@ class YoutubeAnalyzer:
     def get_upload_date(self):
         pass
     
-    def get_video_genre(self):
-        pass
-
+    def get_video_genre(self, video_genre_map={'itemprop': 'genre'}):
+        self.video_genre = self.video_bsoup.find('meta', attrs=video_genre_map)
+        self.video_genre = self.video_genre.get('content')
+        return self.video_genre
     
 pryda_loving_you = YoutubeAnalyzer(video_url='https://youtu.be/iByQSaWTR1g')
 
@@ -105,3 +106,4 @@ pryda_loving_you.get_current_number_of_views()
 pryda_loving_you.get_video_title()
 pryda_loving_you.get_video_description()
 pryda_loving_you.get_thumbnail_link()
+pryda_loving_you.get_video_genre()
