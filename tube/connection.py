@@ -11,7 +11,7 @@ from bs4 import (BeautifulSoup,
 
 
 
-class YoutubeAnalyzer:
+class YoutubeMetaDataRetriever:
     """ Class to retrieve and analyzer information of Youtube videos.
     """
     def __init__(self, video_url: str):
@@ -42,7 +42,7 @@ class YoutubeAnalyzer:
         return self.video_bsoup.find_all('meta')
 
       
-    def _get_video_url(self) -> str:
+    def __get_video_url__(self) -> str:
         return self.video_url
 
   
@@ -59,12 +59,14 @@ class YoutubeAnalyzer:
         self.title = title_tags[0].get('content')
         return self.title
 
+
     def get_video_description(
             self, 
             descr_map={'property': 'og:description'}) -> str:
         self.description = self.video_bsoup.find('meta', attrs=descr_map)
         self.description = self.description.get('content')
         return self.description 
+
 
     def get_thumbnail_link(self, thumbn_map={'property': 'og:image'}) -> str:
         self.thumbnail = self.video_bsoup.find('meta', attrs=thumbn_map)
@@ -76,6 +78,7 @@ class YoutubeAnalyzer:
         self.channel_id = self.video_bsoup.find('meta', attrs=channel_map)
         self.channel_id = self.channel_id.get('content')
         return self.channel_id
+
     
     def get_video_id(self, video_id_map={'itemprop': 'videoId'}) -> str:
         self.video_id = self.video_bsoup.find('meta', attrs=video_id_map)
@@ -89,18 +92,20 @@ class YoutubeAnalyzer:
     
     def get_published_date(self):
         pass
+
     
     def get_upload_date(self):
         pass
+
     
     def get_video_genre(self, video_genre_map={'itemprop': 'genre'}):
         self.video_genre = self.video_bsoup.find('meta', attrs=video_genre_map)
         self.video_genre = self.video_genre.get('content')
         return self.video_genre
     
-pryda_loving_you = YoutubeAnalyzer(video_url='https://youtu.be/iByQSaWTR1g')
+pryda_loving_you = YoutubeMetaDataRetriever(video_url='https://youtu.be/iByQSaWTR1g')
 
-pryda_loving_you._get_video_url()
+pryda_loving_you.__get_video_url__()
 pryda_loving_you.__meta_content_tags__()
 pryda_loving_you.get_current_number_of_views()
 pryda_loving_you.get_video_title()
