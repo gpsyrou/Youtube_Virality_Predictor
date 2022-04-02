@@ -11,6 +11,34 @@ from bs4 import (BeautifulSoup,
 
 
 
+def transform_pt_format(pt: str, target_format: str = 'minutes') -> float:
+    """ Method to transform time duration of format ISO_8601 to a numeric
+    representation.
+    
+    Arguments:
+    ---------
+        pt:
+            The duration time in ISO_8601 format
+        target_format: 
+                The target transforation format: 'seconds', 'minutes', 'hours'
+    """
+    if pt[0:2] == 'PT':
+        pt = pt.replace('PT', '')
+        m_divider = pt.split('M')
+        minutes = int(m_divider[0])
+        seconds = int(m_divider[0].split('S')[0])
+    
+        if target_format=='seconds':
+            return (60 * minutes) + seconds
+        elif target_format=='minutes':
+            return minutes + (seconds/60)
+        elif target_format=='hours':
+            return ((minutes + (seconds/60)) / 60)
+    else:
+        raise ValueError('The input string is not in ISO_8601 format..!')
+
+
+
 class YoutubeMetaDataRetriever:
     """ Class to retrieve and analyzer information of Youtube videos.
     """
@@ -86,24 +114,49 @@ class YoutubeMetaDataRetriever:
         return self.video_id
     
     
-    def get_video_duration(self):
-        pass
+    def get_video_duration(
+            self, 
+            duration_map={'itemprop': 'duration'}, 
+            target_format: str = 'minutes'
+    ) -> int:
+        self.video_duration = self.video_bsoup.find('meta', attrs=duration_map)
+        self.video_duration = self.video_duration.get('content')
+        self.video_duration = transform_pt_format(
+            pt=self.video_duration, 
+            target_format=target_format
+            )
+        return self.video_duration 
     
+    def get_published_date(
+            self, publishdt_map={'itemprop': 'datePublished'}
+    ) -> str:
+        self.publised_date = self.video_bsoup.find('meta', attrs=publishdt_map)
+        self.publised_date = self.publised_date.get('content')
+        return self.publised_date
     
-    def get_published_date(self):
-        pass
+    def get_upload_date(self, uploaddt_map={'itemprop': 'uploadDate'}) -> str:
+        self.upload_date = self.video_bsoup.find('meta', attrs=uploaddt_map)
+        self.upload_date = self.upload_date.get('content')
+        return self.upload_date
 
     
-    def get_upload_date(self):
-        pass
-
-    
-    def get_video_genre(self, video_genre_map={'itemprop': 'genre'}):
+    def get_video_genre(self, video_genre_map={'itemprop': 'genre'}) -> str:
         self.video_genre = self.video_bsoup.find('meta', attrs=video_genre_map)
         self.video_genre = self.video_genre.get('content')
         return self.video_genre
     
+    def get_regions_allowed(
+            self,
+            regions_map={'itemprop': 'regionsAllowed'}
+    ) -> List[str]:
+        self.regions_allowed = self.video_bsoup.find('meta', attrs=regions_map)
+        self.regions_allowed = self.regions_allowed.get('content')
+        self.regions_allowed = list(self.regions_allowed.split(","))
+        return self.regions_allowed
+        
+        
 pryda_loving_you = YoutubeMetaDataRetriever(video_url='https://youtu.be/iByQSaWTR1g')
+big_video = YoutubeMetaDataRetriever(video_url='https://youtu.be/fWRISvgAygU')
 
 pryda_loving_you.__get_video_url__()
 pryda_loving_you.__meta_content_tags__()
@@ -112,3 +165,14 @@ pryda_loving_you.get_video_title()
 pryda_loving_you.get_video_description()
 pryda_loving_you.get_thumbnail_link()
 pryda_loving_you.get_video_genre()
+pryda_loving_you.get_regions_allowed()
+
+
+big_video.get_video_title()
+
+test = pryda_loving_you.get_video_duration()
+test2 = big_video.get_video_duration()
+
+
+
+
