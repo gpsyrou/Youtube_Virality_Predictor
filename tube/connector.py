@@ -1,14 +1,17 @@
+""" 
+Author: Georgios Spyrou (georgios.spyrou1@gmail.com")
 
-import pandas as pd
+Purpose: A collection of classes/methods to efficiently connect to youtube 
+videos and retrieve metadata information, such as number of views, channel_id,
+upload date and more.
+"""
+
+
 import urllib.request
-import time
-import re
-from dateutil.parser import isoparse
-from datetime import datetime
-from typing import List, Mapping
-from bs4 import (BeautifulSoup,
-                 element)
+from typing import List
+from bs4 import (BeautifulSoup, element)
 from tube.transformer import transform_pt_format
+
 
 class YoutubeMetaDataRetriever:
     """ Class to retrieve and analyzer information of Youtube videos.
@@ -50,12 +53,14 @@ class YoutubeMetaDataRetriever:
             views_map={'itemprop': 'interactionCount'}) -> int:
         views_tags = self.video_bsoup.find_all('meta', attrs=views_map)
         self.number_of_views = int(views_tags[0].get('content'))
+
         return self.number_of_views
 
 
     def get_video_title(self, title_map={'name': 'title'}) -> str:
         title_tags = self.video_bsoup.find_all('meta', attrs=title_map)
         self.title = title_tags[0].get('content')
+
         return self.title
 
 
@@ -64,24 +69,28 @@ class YoutubeMetaDataRetriever:
             descr_map={'property': 'og:description'}) -> str:
         self.description = self.video_bsoup.find('meta', attrs=descr_map)
         self.description = self.description.get('content')
+
         return self.description 
 
 
     def get_thumbnail_link(self, thumbn_map={'property': 'og:image'}) -> str:
         self.thumbnail = self.video_bsoup.find('meta', attrs=thumbn_map)
         self.thumbnail = self.thumbnail.get('content')
+
         return self.thumbnail 
 
     
     def get_channel_id(self, channel_map={'itemprop': 'channelId'}) -> str:
         self.channel_id = self.video_bsoup.find('meta', attrs=channel_map)
         self.channel_id = self.channel_id.get('content')
+
         return self.channel_id
 
     
     def get_video_id(self, video_id_map={'itemprop': 'videoId'}) -> str:
         self.video_id = self.video_bsoup.find('meta', attrs=video_id_map)
         self.video_id = self.video_id.get('content')
+
         return self.video_id
     
     
@@ -96,25 +105,32 @@ class YoutubeMetaDataRetriever:
             pt=self.video_duration, 
             target_format=target_format
             )
+
         return self.video_duration 
-    
+
+  
     def get_published_date(
             self, publishdt_map={'itemprop': 'datePublished'}
     ) -> str:
         self.publised_date = self.video_bsoup.find('meta', attrs=publishdt_map)
         self.publised_date = self.publised_date.get('content')
+
         return self.publised_date
+
     
     def get_upload_date(self, uploaddt_map={'itemprop': 'uploadDate'}) -> str:
         self.upload_date = self.video_bsoup.find('meta', attrs=uploaddt_map)
         self.upload_date = self.upload_date.get('content')
+
         return self.upload_date
 
     
     def get_video_genre(self, video_genre_map={'itemprop': 'genre'}) -> str:
         self.video_genre = self.video_bsoup.find('meta', attrs=video_genre_map)
         self.video_genre = self.video_genre.get('content')
+
         return self.video_genre
+
     
     def get_regions_allowed(
             self,
@@ -123,27 +139,5 @@ class YoutubeMetaDataRetriever:
         self.regions_allowed = self.video_bsoup.find('meta', attrs=regions_map)
         self.regions_allowed = self.regions_allowed.get('content')
         self.regions_allowed = list(self.regions_allowed.split(","))
+
         return self.regions_allowed
-        
-        
-pryda_loving_you = YoutubeMetaDataRetriever(video_url='https://youtu.be/iByQSaWTR1g')
-big_video = YoutubeMetaDataRetriever(video_url='https://youtu.be/fWRISvgAygU')
-
-pryda_loving_you.__get_video_url__()
-pryda_loving_you.__meta_content_tags__()
-pryda_loving_you.get_current_number_of_views()
-pryda_loving_you.get_video_title()
-pryda_loving_you.get_video_description()
-pryda_loving_you.get_thumbnail_link()
-pryda_loving_you.get_video_genre()
-pryda_loving_you.get_regions_allowed()
-
-
-big_video.get_video_title()
-
-test = pryda_loving_you.get_video_duration()
-test2 = big_video.get_video_duration()
-
-
-
-
