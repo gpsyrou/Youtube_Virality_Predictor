@@ -1,7 +1,7 @@
 
 import unittest
 import numpy as np
-from tube.connector import YoutubeMetaDataRetriever
+from tube.metadata import YoutubeMetaDataRetriever
 
 video_url = 'https://youtu.be/iByQSaWTR1g'
 
