@@ -22,7 +22,7 @@ def transform_pt_format(pt: str, target_format: str = 'minutes') -> float:
         pt = pt.replace('PT', '')
         m_divider = pt.split('M')
         minutes = int(m_divider[0])
-        seconds = int(m_divider[0].split('S')[0])
+        seconds = int(m_divider[1].split('S')[0])
 
         if target_format == 'seconds':
             return (60 * minutes) + seconds
