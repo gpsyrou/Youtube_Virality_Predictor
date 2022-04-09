@@ -84,15 +84,19 @@ class YoutubeMetaDataRetriever:
 
         return self.video_id
 
+    def get_duration_in_pt(self, duration_map={'itemprop': 'duration'}) -> str:
+        self.pt_format = self.video_bsoup.find('meta', attrs=duration_map)
+        self.pt_format = self.pt_format.get('content')
+        return self.pt_format
+
     def get_video_duration(
             self,
             duration_map={'itemprop': 'duration'},
             target_format: str = 'minutes'
     ) -> int:
-        self.video_duration = self.video_bsoup.find('meta', attrs=duration_map)
-        self.video_duration = self.video_duration.get('content')
+        self.pt_format = self.get_duration_in_pt(duration_map=duration_map)
         self.video_duration = transform_pt_format(
-            pt=self.video_duration,
+            pt=self.pt_format,
             target_format=target_format
             )
 
