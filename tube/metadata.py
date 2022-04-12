@@ -10,6 +10,7 @@ upload date and more.
 import urllib.request
 from typing import List
 from bs4 import (BeautifulSoup, element)
+from matplotlib.image import thumbnail
 from tube.transformer import transform_pt_format
 
 
@@ -131,3 +132,13 @@ class YoutubeMetaDataRetriever:
         self.regions_allowed = list(self.regions_allowed.split(","))
 
         return self.regions_allowed
+
+    def collect_metadata(self):
+        title = self.get_video_title()
+        description = self.get_video_description()
+        number_of_views = self.get_current_number_of_views()
+        thumbnail = self.get_thumbnail_link()
+        channel_id = self.get_channel_id()
+        video_id = self.get_video_id()
+        duration = self.get_video_duration()
+        
