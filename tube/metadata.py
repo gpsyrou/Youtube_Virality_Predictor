@@ -8,7 +8,7 @@ upload date and more.
 
 
 import urllib.request
-from typing import List
+from typing import List, Tuple
 from bs4 import (BeautifulSoup, element)
 from matplotlib.image import thumbnail
 from tube.transformer import transform_pt_format
@@ -133,12 +133,34 @@ class YoutubeMetaDataRetriever:
 
         return self.regions_allowed
 
-    def collect_metadata(self):
-        title = self.get_video_title()
-        description = self.get_video_description()
+
+class MetadataCollector(YoutubeMetaDataRetriever):
+    def __init__(self, video_url: str):
+        YoutubeMetaDataRetriever.__init__(self, video_url=video_url)
+
+    def collect_variable_metadata(self) -> int:
         number_of_views = self.get_current_number_of_views()
-        thumbnail = self.get_thumbnail_link()
+
+        return number_of_views
+
+    def collect_id_metadata(self) -> Tuple[str, str]:
         channel_id = self.get_channel_id()
         video_id = self.get_video_id()
+
+        return (channel_id, video_id)
+
+    def collect_description_metadata(self) -> Tuple[str, str, str, float, str, List[str]]:
+        title = self.get_video_title()
+        description = self.get_video_description()
+        thumb = self.get_thumbnail_link()
         duration = self.get_video_duration()
+        genre = self.get_video_genre()
+        regions = self.get_regions_allowed()
+
+        return title, description, thumb, duration, genre, regions
+
+    def collect_date_metadata(self) -> Tuple[str, str]:
+        publised_date = self.get_published_date()
+        upload_date = self.get_upload_date()
         
+        return publised_date, upload_date
