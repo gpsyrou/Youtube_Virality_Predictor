@@ -139,17 +139,39 @@ class MetadataCollector(YoutubeMetaDataRetriever):
         YoutubeMetaDataRetriever.__init__(self, video_url=video_url)
 
     def collect_variable_metadata(self) -> int:
+        """ Returns a collection of video information that is variable in time.
+
+        Returns:
+        -------
+            number_of_views
+        """
         number_of_views = self.get_current_number_of_views()
 
         return number_of_views
 
     def collect_id_metadata(self) -> Tuple[str, str]:
+        """ Returns a collection of video information around identification
+        parameters.
+
+        Returns:
+        -------
+            channel_id, video_id
+        """
         channel_id = self.get_channel_id()
         video_id = self.get_video_id()
 
         return (channel_id, video_id)
 
-    def collect_description_metadata(self) -> Tuple[str, str, str, float, str, List[str]]:
+    def collect_description_metadata(
+        self
+    ) -> Tuple[str, str, str, float, str, List[str]]:
+        """ Returns a collection of parameters that correspond to video's
+        description.
+
+        Returns:
+        -------
+            title, description, thumb, duration, genre, regions
+        """
         title = self.get_video_title()
         description = self.get_video_description()
         thumb = self.get_thumbnail_link()
@@ -157,10 +179,17 @@ class MetadataCollector(YoutubeMetaDataRetriever):
         genre = self.get_video_genre()
         regions = self.get_regions_allowed()
 
-        return title, description, thumb, duration, genre, regions
+        return (title, description, thumb, duration, genre, regions)
 
     def collect_date_metadata(self) -> Tuple[str, str]:
+        """ Returns a collection parameters related to date information about
+        the video.
+
+        Returns:
+        -------
+            title, description, thumb, duration, genre, regions
+        """
         publised_date = self.get_published_date()
         upload_date = self.get_upload_date()
-        
-        return publised_date, upload_date
+
+        return (publised_date, upload_date)
