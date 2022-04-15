@@ -8,7 +8,7 @@ upload date and more.
 
 
 import urllib.request
-from typing import List, Tuple
+from typing import List, Tuple, Dict, Any
 from bs4 import (BeautifulSoup, element)
 from matplotlib.image import thumbnail
 from tube.transformer import transform_pt_format
@@ -94,7 +94,7 @@ class YoutubeMetaDataRetriever:
             self,
             duration_map={'itemprop': 'duration'},
             target_format: str = 'minutes'
-    ) -> int:
+    ) -> float:
         self.pt_format = self.get_duration_in_pt(duration_map=duration_map)
         self.video_duration = transform_pt_format(
             pt=self.pt_format,
@@ -126,19 +126,19 @@ class YoutubeMetaDataRetriever:
     def get_regions_allowed(
             self,
             regions_map={'itemprop': 'regionsAllowed'}
-    ) -> List[str]:
+    ) -> str:
         self.regions_allowed = self.video_bsoup.find('meta', attrs=regions_map)
         self.regions_allowed = self.regions_allowed.get('content')
         self.regions_allowed = list(self.regions_allowed.split(","))
 
-        return self.regions_allowed
+        return str(self.regions_allowed)
 
 
 class MetadataCollector(YoutubeMetaDataRetriever):
     def __init__(self, video_url: str):
         YoutubeMetaDataRetriever.__init__(self, video_url=video_url)
 
-    def collect_variable_metadata(self) -> int:
+    def collect_variable_metadata(self) -> Dict[str, int]:
         """ Returns a collection of video information that is variable in time.
 
         Returns:
@@ -146,10 +146,12 @@ class MetadataCollector(YoutubeMetaDataRetriever):
             number_of_views
         """
         number_of_views = self.get_current_number_of_views()
+        
+        variable_dict = {'number_of_views': number_of_views}
 
-        return number_of_views
+        return variable_dict
 
-    def collect_id_metadata(self) -> Tuple[str, str]:
+    def collect_id_metadata(self) -> Dict[str, str]:
         """ Returns a collection of video information around identification
         parameters.
 
@@ -159,12 +161,14 @@ class MetadataCollector(YoutubeMetaDataRetriever):
         """
         channel_id = self.get_channel_id()
         video_id = self.get_video_id()
+        
+        id_dict = {'channel_id': channel_id, 'video_id': video_id}
 
-        return (channel_id, video_id)
+        return id_dict
 
     def collect_description_metadata(
         self
-    ) -> Tuple[str, str, str, float, str, List[str]]:
+    ) -> Dict[str, Any]:
         """ Returns a collection of parameters that correspond to video's
         description.
 
@@ -178,18 +182,24 @@ class MetadataCollector(YoutubeMetaDataRetriever):
         duration = self.get_video_duration()
         genre = self.get_video_genre()
         regions = self.get_regions_allowed()
+        
+        desc_dict = {'title': title, 'description': description, 
+                     'thumbnail': thumb, 'duration': duration, 
+                     'genre': genre, 'regions': regions}
 
-        return (title, description, thumb, duration, genre, regions)
+        return desc_dict
 
-    def collect_date_metadata(self) -> Tuple[str, str]:
+    def collect_date_metadata(self) -> Dict[str, str]:
         """ Returns a collection parameters related to date information about
         the video.
 
         Returns:
         -------
-            title, description, thumb, duration, genre, regions
+            date_dict: {published_date, upload_date}
         """
-        publised_date = self.get_published_date()
+        publ_date = self.get_published_date()
         upload_date = self.get_upload_date()
+        
+        date_dict = {'published_date': publ_date, 'upload_date': upload_date}
 
-        return (publised_date, upload_date)
+        return date_dict

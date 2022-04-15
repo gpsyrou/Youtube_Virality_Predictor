@@ -2,18 +2,39 @@
 transformations to prepare the data for further analysis.
 """
 
-import tube.metadata as meta
+from tube.metadata import YoutubeMetaDataRetriever, MetadataCollector
+from tube.transformer import get_current_datetime
+import pandas as pd
+from typing import Dict, Any
 
 video_url = 'https://youtu.be/yzTuBuRdAyA'
 
-
-hills = meta.YoutubeMetaDataRetriever(video_url=video_url)
-
-hills.__meta_content_tags__()
-hills.get_video_description()
-hills.get_video_duration(target_format='minutes')
-hills.get_duration_in_pt()
-
-hills = meta.MetadataCollector(video_url=video_url)
+hills = MetadataCollector(video_url=video_url)
 hills.collect_date_metadata()
 hills.collect_id_metadata()
+hills.collect_description_metadata()
+hills.collect_variable_metadata()
+
+
+
+class TubeConnector(MetadataCollector):
+    def __init__(self, video_url: str):
+        MetadataCollector.__init__(self, video_url=video_url)
+        
+    def merge_video_meta_info(self) -> Dict[str, Any]:
+        dates = self.collect_date_metadata()
+        ids = self.collect_id_metadata()
+        descr = self.collect_description_metadata()
+        var = self.collect_variable_metadata()
+        
+        return {**ids, **descr, **dates, **var}
+        
+    def create_dataframe_for_video(self) -> pd.DataFrame:
+        meta_info_dict = self.merge_video_meta_info()        
+        df = pd.DataFrame.from_records([meta_info_dict])
+        
+        return df
+    
+v = TubeConnector(video_url=video_url)      
+v.merge_video_meta_info()
+v.create_dataframe_from_meta_info()

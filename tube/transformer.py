@@ -6,6 +6,7 @@ retrieval process. Support the main collector.py script to perform data
 transformation operations.
 """
 
+import datetime
 
 def transform_pt_format(pt: str, target_format: str = 'minutes') -> float:
     """ Method to transform time duration of format ISO_8601 to a numeric
@@ -32,3 +33,13 @@ def transform_pt_format(pt: str, target_format: str = 'minutes') -> float:
             return ((minutes + (seconds/60)) / 60)
     else:
         raise ValueError('The input string is not in ISO_8601 format..!')
+
+
+def get_current_datetime(as_type='str') -> str:
+    time_now = datetime.datetime.now()
+    if as_type=='str':
+        return str(time_now).split('.')[0]
+    elif as_type=='datetime':
+        return time_now
+    else:
+        raise ValueError('The specified date time is not valid..!')
