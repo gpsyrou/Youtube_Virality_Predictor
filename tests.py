@@ -1,7 +1,7 @@
 
 import unittest
 import numpy as np
-from tube.connector import YoutubeMetaDataRetriever
+from tube.metadata import YoutubeMetaDataRetriever
 
 video_url = 'https://youtu.be/iByQSaWTR1g'
 
@@ -26,7 +26,7 @@ class TestMetaDataRetrievalInfo(unittest.TestCase):
     ):
         video = YoutubeMetaDataRetriever(video_url=video_url)
         duration = video.get_video_duration(target_format='minutes')
-        self.assertEqual(8.1333, np.round(duration, 4), msg=err_msg)
+        self.assertEqual(8.5167, np.round(duration, 4), msg=err_msg)
 
 
     def testDurationTransformationSeconds(
@@ -35,4 +35,4 @@ class TestMetaDataRetrievalInfo(unittest.TestCase):
     ):
         video = YoutubeMetaDataRetriever(video_url=video_url)
         duration = video.get_video_duration(target_format='seconds')
-        self.assertEqual(488, duration, msg=err_msg)
+        self.assertEqual(511.0, duration, msg=err_msg)
