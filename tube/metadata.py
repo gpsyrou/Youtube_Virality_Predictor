@@ -203,3 +203,11 @@ class MetadataCollector(YoutubeMetaDataRetriever):
         date_dict = {'published_date': publ_date, 'upload_date': upload_date}
 
         return date_dict
+
+    def merge_video_meta_info(self) -> Dict[str, Any]:
+        dates = self.collect_date_metadata()
+        ids = self.collect_id_metadata()
+        descr = self.collect_description_metadata()
+        var = self.collect_variable_metadata()
+        
+        return {**ids, **descr, **dates, **var}

@@ -8,6 +8,7 @@ transformation operations.
 
 import datetime
 
+
 def transform_pt_format(pt: str, target_format: str = 'minutes') -> float:
     """ Method to transform time duration of format ISO_8601 to a numeric
     representation.
@@ -37,9 +38,9 @@ def transform_pt_format(pt: str, target_format: str = 'minutes') -> float:
 
 def get_current_datetime(as_type='str') -> str:
     time_now = datetime.datetime.now()
-    if as_type=='str':
+    if as_type == 'str':
         return str(time_now).split('.')[0]
-    elif as_type=='datetime':
+    elif as_type == 'datetime':
         return time_now
     else:
         raise ValueError('The specified date time is not valid..!')
