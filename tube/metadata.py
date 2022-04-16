@@ -8,9 +8,8 @@ upload date and more.
 
 
 import urllib.request
-from typing import List, Tuple, Dict, Any
+from typing import Dict, Any
 from bs4 import (BeautifulSoup, element)
-from matplotlib.image import thumbnail
 from tube.transformer import transform_pt_format
 
 
@@ -146,7 +145,7 @@ class MetadataCollector(YoutubeMetaDataRetriever):
             number_of_views
         """
         number_of_views = self.get_current_number_of_views()
-        
+
         variable_dict = {'number_of_views': number_of_views}
 
         return variable_dict
@@ -161,7 +160,7 @@ class MetadataCollector(YoutubeMetaDataRetriever):
         """
         channel_id = self.get_channel_id()
         video_id = self.get_video_id()
-        
+
         id_dict = {'channel_id': channel_id, 'video_id': video_id}
 
         return id_dict
@@ -182,9 +181,9 @@ class MetadataCollector(YoutubeMetaDataRetriever):
         duration = self.get_video_duration()
         genre = self.get_video_genre()
         regions = self.get_regions_allowed()
-        
-        desc_dict = {'title': title, 'description': description, 
-                     'thumbnail': thumb, 'duration': duration, 
+
+        desc_dict = {'title': title, 'description': description,
+                     'thumbnail': thumb, 'duration': duration,
                      'genre': genre, 'regions': regions}
 
         return desc_dict
@@ -199,7 +198,7 @@ class MetadataCollector(YoutubeMetaDataRetriever):
         """
         publ_date = self.get_published_date()
         upload_date = self.get_upload_date()
-        
+
         date_dict = {'published_date': publ_date, 'upload_date': upload_date}
 
         return date_dict
@@ -209,5 +208,5 @@ class MetadataCollector(YoutubeMetaDataRetriever):
         ids = self.collect_id_metadata()
         descr = self.collect_description_metadata()
         var = self.collect_variable_metadata()
-        
+
         return {**ids, **descr, **dates, **var}
