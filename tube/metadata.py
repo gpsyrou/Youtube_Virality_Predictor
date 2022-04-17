@@ -1,7 +1,7 @@
 """
 Author: Georgios Spyrou (georgios.spyrou1@gmail.com")
 
-Purpose: A collection of classes/methods to efficiently connect to youtube 
+Purpose: A collection of classes/methods to efficiently connect to youtube
 videos and retrieve metadata information, such as number of views, channel_id,
 upload date and more.
 """
@@ -22,7 +22,7 @@ class YoutubeMetaDataRetriever:
 
     def url_to_bs4(self, video_url: str) -> BeautifulSoup:
         """
-        Given a website link (URL), retrieve the corresponding website in an 
+        Given a website link (URL), retrieve the corresponding website in an
         html format.
         Parameters
         ----------
@@ -32,7 +32,7 @@ class YoutubeMetaDataRetriever:
         # print('Attempting to retrieve HTML object for {0}'.format(video_url))
         request = urllib.request.urlopen(video_url)
         if request.getcode() != 200:
-            raise Exception('Can not communicate with the client')        
+            raise Exception('Can not communicate with the client')
         else:
             response = request.read()
             response_html = BeautifulSoup(response, 'html.parser')
@@ -105,10 +105,10 @@ class YoutubeMetaDataRetriever:
     def get_published_date(
             self, publishdt_map={'itemprop': 'datePublished'}
     ) -> str:
-        self.publised_date = self.video_bsoup.find('meta', attrs=publishdt_map)
-        self.publised_date = self.publised_date.get('content')
+        self.published_date = self.video_bsoup.find('meta', attrs=publishdt_map)
+        self.published_date = self.published_date.get('content')
 
-        return self.publised_date
+        return self.published_date
 
     def get_upload_date(self, uploaddt_map={'itemprop': 'uploadDate'}) -> str:
         self.upload_date = self.video_bsoup.find('meta', attrs=uploaddt_map)

@@ -34,6 +34,5 @@ v2 = TubeConnector(video_url=video_url_2)
 v1.data
 v2.data
 
-
 v1.create_dataframe_for_video()
 v1.create_json_line_for_video()

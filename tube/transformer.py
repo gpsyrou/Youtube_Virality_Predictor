@@ -1,8 +1,8 @@
 """
 Author: Georgios Spyrou (georgios.spyrou1@gmail.com")
 
-Purpose: A collection of functions/methods used to support the metadata 
-retrieval process. Support the main collector.py script to perform data 
+Purpose: A collection of functions/methods used to support the metadata
+retrieval process. Support the main collector.py script to perform data
 transformation operations.
 """
 
