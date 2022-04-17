@@ -128,7 +128,6 @@ class YoutubeMetaDataRetriever:
     ) -> str:
         self.regions_allowed = self.video_bsoup.find('meta', attrs=regions_map)
         self.regions_allowed = self.regions_allowed.get('content')
-        self.regions_allowed = list(self.regions_allowed.split(","))
 
         return str(self.regions_allowed)
 

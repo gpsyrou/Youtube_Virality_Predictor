@@ -31,7 +31,7 @@ c.execute(metadata_create_table_q)
 insert_into_q = '''
     INSERT INTO TubeMetadata (Channel_id, Video_id, Title, Description, Thumbnail, Duration, Genre, Regions, Published_Date, Upload_Date, Number_Of_Views)
     VALUES
-    ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10})
+    ('{0}', '{1}', '{2}', '{3}', '{4}', {5}, '{6}', '{7}', '{8}', '{9}', {10})
 '''.format(
 v1.channel_id, 
 v1.video_id, 
@@ -47,3 +47,5 @@ v1.number_of_views
 )
 
 c.execute(insert_into_q)
+conn.commit()
+conn.close()
