@@ -12,32 +12,39 @@ c = conn.cursor()
 
 
 # Drop target table query
-drop_table_q = '''DROP TABLE {0}'''.format(metadata_table_name)
-c.execute(drop_table_q)
-conn.commit()
+def drop_target_table(table_name: str):
+    drop_table_q = '''DROP TABLE {0}'''.format(table_name)
+    c.execute(drop_table_q)
+    conn.commit()
+
+# drop_target_table(table_name=metadata_table_name)
 
 # Create target table query
-metadata_create_table_q = '''
-    CREATE TABLE {0}
-    (
-         {0}Id INTEGER PRIMARY KEY AUTOINCREMENT,
-         Channel_id TEXT NOT NULL,
-         Video_id TEXT NOT NULL,
-         Title TEXT NOT NULL,
-         Description TEXT NOT NULL,
-         Thumbnail TEXT NOT NULL,
-         Duration DECIMAL(10,5) NOT NULL,
-         Genre TEXT NOT NULL,
-         Regions TEXT NOT NULL,
-         Published_Date DATETIME NOT NULL,
-         Upload_Date DATETIME NOT NULL,
-         Number_Of_Views BIGINT NOT NULL,
-         CreatedDate DATETIME
-    )
-'''.format(metadata_table_name)
+def create_target_table(table_name: str):
+    metadata_create_table_q = '''
+        CREATE TABLE {0}
+        (
+             {0}Id INTEGER PRIMARY KEY AUTOINCREMENT,
+             Channel_id TEXT NOT NULL,
+             Video_id TEXT NOT NULL,
+             Title TEXT NOT NULL,
+             Description TEXT NOT NULL,
+             Thumbnail TEXT NOT NULL,
+             Duration DECIMAL(10,5) NOT NULL,
+             Genre TEXT NOT NULL,
+             Regions TEXT NOT NULL,
+             Published_Date DATETIME NOT NULL,
+             Upload_Date DATETIME NOT NULL,
+             Number_Of_Views BIGINT NOT NULL,
+             Video_Url TEXT NOT NULL,
+             CreatedDate DATETIME
+        )
+    '''.format(table_name)
+    
+    c.execute(metadata_create_table_q)
+    conn.commit()
 
-c.execute(metadata_create_table_q)
-conn.close()
+# create_target_table(table_name=metadata_table_name)
 
 # Insert into target table query
 insert_into_q = '''
@@ -53,6 +60,7 @@ insert_into_q = '''
         Published_Date,
         Upload_Date,
         Number_Of_Views,
+        Video_Url,
         CreatedDate
     )
     VALUES
@@ -68,6 +76,7 @@ insert_into_q = '''
         '{9}',
         '{10}',
          {11},
+         {12},
          DATETIME()
     )
 '''

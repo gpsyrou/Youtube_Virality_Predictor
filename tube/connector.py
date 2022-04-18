@@ -60,7 +60,8 @@ class TubeLogger(MetadataCollector):
             self.regions_allowed,
             self.published_date,
             self.upload_date,
-            self.number_of_views
+            self.number_of_views,
+            self.video_url
             )
 
         c.execute(query)
@@ -69,6 +70,13 @@ class TubeLogger(MetadataCollector):
         conn.commit()
         conn.close()
 
+
+def MultiTubeWritter:
+    def __init_(self, video_collection):
+        self.video_collection = video_collection
+
+    def multivideo_meta_push_to_db() -> None:
+        pass
 
 v1 = TubeLogger(video_url=video_url)
 v2 = TubeLogger(video_url=video_url_2)
