@@ -20,6 +20,7 @@ c = conn.cursor()
 
 video_url = 'https://youtu.be/yzTuBuRdAyA'
 video_url_2 = 'https://youtu.be/MOMthW49TU0'
+video_url_3 = 'https://youtu.be/NcXsK_u4ixI'
 
 
 class TubeLogger(MetadataCollector):
@@ -71,7 +72,11 @@ class TubeLogger(MetadataCollector):
 
 v1 = TubeLogger(video_url=video_url)
 v2 = TubeLogger(video_url=video_url_2)
+v3 = TubeLogger(video_url=video_url_3)
 
+v3.data
 
 v1.insert_into_metadata_table()
 v2.insert_into_metadata_table()
+v3.insert_into_metadata_table()
+

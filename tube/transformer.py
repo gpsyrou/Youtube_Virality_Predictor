@@ -7,7 +7,10 @@ transformation operations.
 """
 
 import datetime
+from typing import List
 
+global chars
+chars = ['"']
 
 def transform_pt_format(pt: str, target_format: str = 'minutes') -> float:
     """ Method to transform time duration of format ISO_8601 to a numeric
@@ -44,3 +47,10 @@ def get_current_datetime(as_type='str') -> str:
         return time_now
     else:
         raise ValueError('The specified date time is not valid..!')
+
+
+def remove_chars(s: str, chars: List[str] = chars) -> str:
+    for char in chars:
+        if char in s:
+            s = s.replace(char, '')
+    return s

@@ -10,7 +10,7 @@ upload date and more.
 import urllib.request
 from typing import Dict, Any
 from bs4 import (BeautifulSoup, element)
-from tube.transformer import transform_pt_format
+from tube.transformer import transform_pt_format, remove_chars
 
 
 class YoutubeMetaDataRetriever:
@@ -63,6 +63,7 @@ class YoutubeMetaDataRetriever:
             descr_map={'property': 'og:description'}) -> str:
         self.description = self.video_bsoup.find('meta', attrs=descr_map)
         self.description = self.description.get('content')
+        self.description = remove_chars(self.description)
 
         return self.description
 
