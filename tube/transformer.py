@@ -10,7 +10,7 @@ import datetime
 from typing import List
 
 global chars
-chars = ['"']
+chars = ['"', '\'']
 
 def transform_pt_format(pt: str, target_format: str = 'minutes') -> float:
     """ Method to transform time duration of format ISO_8601 to a numeric

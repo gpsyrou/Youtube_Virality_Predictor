@@ -10,6 +10,12 @@ metadata_table_name = 'TubeMetadata'
 conn = sqlite3.connect(db_name)
 c = conn.cursor()
 
+
+# Drop target table query
+drop_table_q = '''DROP TABLE {0}'''.format(metadata_table_name)
+c.execute(drop_table_q)
+conn.commit()
+
 # Create target table query
 metadata_create_table_q = '''
     CREATE TABLE {0}
@@ -25,7 +31,8 @@ metadata_create_table_q = '''
          Regions TEXT NOT NULL,
          Published_Date DATETIME NOT NULL,
          Upload_Date DATETIME NOT NULL,
-         Number_Of_Views BIGINT NOT NULL
+         Number_Of_Views BIGINT NOT NULL,
+         CreatedDate DATETIME
     )
 '''.format(metadata_table_name)
 
@@ -45,7 +52,8 @@ insert_into_q = '''
         Regions,
         Published_Date,
         Upload_Date,
-        Number_Of_Views
+        Number_Of_Views,
+        CreatedDate
     )
     VALUES
     (
@@ -59,6 +67,7 @@ insert_into_q = '''
         '{8}',
         '{9}',
         '{10}',
-         {11}
+         {11},
+         DATETIME()
     )
 '''

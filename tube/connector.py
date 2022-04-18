@@ -15,8 +15,8 @@ from database.db import insert_into_q
 db_name = 'TubeDB.sqlite'
 metadata_table_name = 'TubeMetadata'
 
-conn = sqlite3.connect(db_name)
-c = conn.cursor()
+#conn = sqlite3.connect(db_name)
+#c = conn.cursor()
 
 video_url = 'https://youtu.be/yzTuBuRdAyA'
 video_url_2 = 'https://youtu.be/MOMthW49TU0'
