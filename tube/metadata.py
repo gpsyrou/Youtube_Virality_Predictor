@@ -105,7 +105,10 @@ class YoutubeMetaDataRetriever:
     def get_published_date(
             self, publishdt_map={'itemprop': 'datePublished'}
     ) -> str:
-        self.published_date = self.video_bsoup.find('meta', attrs=publishdt_map)
+        self.published_date = self.video_bsoup.find(
+            'meta',
+            attrs=publishdt_map
+            )
         self.published_date = self.published_date.get('content')
 
         return self.published_date

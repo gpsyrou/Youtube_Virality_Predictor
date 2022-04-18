@@ -3,14 +3,18 @@ import os
 
 if os.path.exists('TubeDB.sqlite'):
     os.remove('TubeDB.sqlite')
-    
-conn = sqlite3.connect('TubeDB.sqlite')
+
+db_name = 'TubeDB.sqlite'
+metadata_table_name = 'TubeMetadata'
+
+conn = sqlite3.connect(db_name)
 c = conn.cursor()
 
+# Create target table query
 metadata_create_table_q = '''
-    CREATE TABLE TubeMetadata
+    CREATE TABLE {0}
     (
-         TubeMetadataId INTEGER PRIMARY KEY AUTOINCREMENT,
+         {0}Id INTEGER PRIMARY KEY AUTOINCREMENT,
          Channel_id TEXT NOT NULL,
          Video_id TEXT NOT NULL,
          Title TEXT NOT NULL,
@@ -21,43 +25,40 @@ metadata_create_table_q = '''
          Regions TEXT NOT NULL,
          Published_Date DATETIME NOT NULL,
          Upload_Date DATETIME NOT NULL,
-         Number_Of_Views BIGINT NOT NULL 
+         Number_Of_Views BIGINT NOT NULL
     )
-'''
+'''.format(metadata_table_name)
 
 c.execute(metadata_create_table_q)
+conn.close()
 
-
+# Insert into target table query
 insert_into_q = '''
-    INSERT INTO TubeMetadata (
-        Channel_id, 
-        Video_id, 
-        Title, 
-        Description, 
-        Thumbnail, 
-        Duration, 
-        Genre, 
-        Regions, 
-        Published_Date, 
-        Upload_Date, 
+    INSERT INTO {0} (
+        Channel_id,
+        Video_id,
+        Title,
+        Description,
+        Thumbnail,
+        Duration,
+        Genre,
+        Regions,
+        Published_Date,
+        Upload_Date,
         Number_Of_Views
     )
-    VALUES 
-    ('{0}', '{1}', '{2}', '{3}', '{4}', {5}, '{6}', '{7}', '{8}', '{9}', {10})
-'''.format(
-v1.channel_id, 
-v1.video_id, 
-v1.title, 
-v1.description, 
-v1.thumbnail,
-v1.video_duration, 
-v1.video_genre, 
-v1.regions_allowed, 
-v1.published_date, 
-v1.upload_date, 
-v1.number_of_views
-)
-
-c.execute(insert_into_q)
-conn.commit()
-conn.close()
+    VALUES
+    (
+        '{1}',
+        '{2}',
+        '{3}',
+        '{4}',
+        '{5}',
+         {6},
+        '{7}',
+        '{8}',
+        '{9}',
+        '{10}',
+         {11}
+    )
+'''
