@@ -11,15 +11,22 @@ import sqlite3
 from tube.metadata import MetadataCollector
 from database.db import insert_into_q
 
-db_name = 'TubeDB.sqlite'
-metadata_table_name = 'TubeMetadata'
-config_filepath = os.path.join(os.getcwd(), 'config/video_catalog.json')
 
-with open(config_filepath) as video_catalog:
-    catalog = json.load(video_catalog)
+CONFIGS_PATH = os.path.join(os.getcwd(), 'config')
 
-video_url = catalog['videos'][0].get('url')
-video_url
+catalog_path = os.path.join(CONFIGS_PATH, 'video_catalog.json')
+params_path = os.path.join(CONFIGS_PATH, 'param.json')
+
+
+with open(catalog_path) as video_catalog_json:
+    catalog = json.load(video_catalog_json)
+
+
+with open(params_path) as params_json:
+    params = json.load(params_json)
+    
+db_name = params['database_name']
+metadata_table_name = params['meta_table_name']
 
 
 class TubeLogger(MetadataCollector):
@@ -71,12 +78,20 @@ class TubeLogger(MetadataCollector):
 
 
 class MultiTubeWritter:
-    def __init_(self, video_collection):
+    def __init__(self, video_collection: dict):
         self.video_collection = video_collection
+        self.video_url_list = self.generate_video_list(
+            video_collection=video_collection
+            )
+
+    def generate_video_list(self, video_collection: dict):
+        video_url_list = []
+        for video in self.video_collection['videos']:
+            video_url_list.append(video.get('url'))
+        return video_url_list
 
     def multivideo_meta_push_to_db() -> None:
         pass
 
 
-v1 = TubeLogger(video_url=video_url)
-v1.insert_into_metadata_table()
+test = MultiTubeWritter(video_collection=catalog)
