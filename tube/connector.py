@@ -24,7 +24,7 @@ with open(catalog_path) as video_catalog_json:
 
 with open(params_path) as params_json:
     params = json.load(params_json)
-    
+  
 db_name = params['database_name']
 metadata_table_name = params['meta_table_name']
 
@@ -41,8 +41,8 @@ class TubeLogger(MetadataCollector):
         return df
 
     def create_json_line_for_video(self) -> str:
-        jason_line = json.dumps(self.data)
-        return jason_line
+        json_line = json.dumps(self.data)
+        return json_line
 
     def insert_into_metadata_table(
             self,
@@ -77,21 +77,25 @@ class TubeLogger(MetadataCollector):
         conn.close()
 
 
-class MultiTubeWritter:
+class MultiTubeWritter():
     def __init__(self, video_collection: dict):
         self.video_collection = video_collection
-        self.video_url_list = self.generate_video_list(
-            video_collection=video_collection
-            )
+        self.video_url_list = self.generate_video_list()
 
-    def generate_video_list(self, video_collection: dict):
+    def generate_video_list(self):
         video_url_list = []
         for video in self.video_collection['videos']:
             video_url_list.append(video.get('url'))
         return video_url_list
 
-    def multivideo_meta_push_to_db() -> None:
-        pass
+    def multivideo_meta_push_to_db(self) -> None:
+        for video_url in self.video_url_list:
+            video = TubeLogger(video_url=video_url)
+            video.insert_into_metadata_table(
+                q=insert_into_q,
+                target_tablename=metadata_table_name
+                )
 
-
+test = TubeLogger(video_url='https://youtu.be/yzTuBuRdAyA')
 test = MultiTubeWritter(video_collection=catalog)
+test.multivideo_meta_push_to_db()
