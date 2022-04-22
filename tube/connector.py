@@ -24,7 +24,7 @@ with open(catalog_path) as video_catalog_json:
 
 with open(params_path) as params_json:
     params = json.load(params_json)
-  
+
 db_name = params['database_name']
 metadata_table_name = params['meta_table_name']
 
@@ -44,17 +44,12 @@ class TubeLogger(MetadataCollector):
         json_line = json.dumps(self.data)
         return json_line
 
-    def insert_into_metadata_table(
-            self,
-            q: str = insert_into_q,
-            target_tablename: str = metadata_table_name
-    ) -> None:
-
-        conn = sqlite3.connect(db_name)
-        c = conn.cursor()
-
-        print('Populating {0}...'.format(target_tablename))
-        query = q.format(
+    def create_insert_into_query(
+        self,
+        q: str = insert_into_q,
+        target_tablename: str = metadata_table_name
+    ) -> str:
+        self.insert_query = q.format(
             target_tablename,
             self.channel_id,
             self.video_id,
@@ -68,6 +63,20 @@ class TubeLogger(MetadataCollector):
             self.upload_date,
             self.number_of_views,
             self.video_url
+            )
+        return self.insert_query
+
+    def insert_into_metadata_table(
+        self,
+        target_tablename: str = metadata_table_name
+    ) -> None:
+
+        conn = sqlite3.connect(db_name)
+        c = conn.cursor()
+
+        print('Populating {0}...'.format(target_tablename))
+        query = self.create_insert_into_query(
+            target_tablename=target_tablename
             )
 
         c.execute(query)
@@ -92,10 +101,11 @@ class MultiTubeWritter():
         for video_url in self.video_url_list:
             video = TubeLogger(video_url=video_url)
             video.insert_into_metadata_table(
-                q=insert_into_q,
                 target_tablename=metadata_table_name
                 )
 
+
 test = TubeLogger(video_url='https://youtu.be/yzTuBuRdAyA')
+test.create_insert_into_query()
 test = MultiTubeWritter(video_collection=catalog)
 test.multivideo_meta_push_to_db()

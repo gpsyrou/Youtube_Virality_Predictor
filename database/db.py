@@ -19,6 +19,7 @@ def drop_target_table(table_name: str):
 
 # drop_target_table(table_name=metadata_table_name)
 
+
 # Create target table query
 def create_target_table(table_name: str):
     metadata_create_table_q = '''
@@ -40,11 +41,12 @@ def create_target_table(table_name: str):
              CreatedDate DATETIME
         )
     '''.format(table_name)
-    
+
     c.execute(metadata_create_table_q)
     conn.commit()
 
 # create_target_table(table_name=metadata_table_name)
+
 
 # Insert into target table query
 insert_into_q = '''
@@ -76,7 +78,7 @@ insert_into_q = '''
         '{9}',
         '{10}',
          {11},
-         {12},
-         DATETIME()
+        '{12}',
+        DATETIME()
     )
 '''
