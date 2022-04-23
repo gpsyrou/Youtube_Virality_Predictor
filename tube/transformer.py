@@ -50,6 +50,8 @@ def get_current_datetime(as_type='str') -> str:
 
 
 def remove_chars(s: str, chars: List[str] = chars) -> str:
+    """ Removes the characters contained in chars from string s
+    """
     for char in chars:
         if char in s:
             s = s.replace(char, '')

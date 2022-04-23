@@ -1,8 +1,8 @@
 import sqlite3
 import os
 
-if os.path.exists('TubeDB.sqlite'):
-    os.remove('TubeDB.sqlite')
+#if os.path.exists('TubeDB.sqlite'):
+#    os.remove('TubeDB.sqlite')
 
 db_name = 'TubeDB.sqlite'
 metadata_table_name = 'TubeMetadata'
@@ -38,7 +38,10 @@ def create_target_table(table_name: str):
              Upload_Date DATETIME NOT NULL,
              Number_Of_Views BIGINT NOT NULL,
              Video_Url TEXT NOT NULL,
-             CreatedDate DATETIME
+             CreatedDate DATE,
+             CreatedDatetime DATETIME,
+             
+             CONSTRAINT uc_video_day UNIQUE (Video_id, CreatedDate)
         )
     '''.format(table_name)
 
@@ -63,7 +66,8 @@ insert_into_q = '''
         Upload_Date,
         Number_Of_Views,
         Video_Url,
-        CreatedDate
+        CreatedDate,
+        CreatedDatetime
     )
     VALUES
     (
@@ -79,6 +83,7 @@ insert_into_q = '''
         '{10}',
          {11},
         '{12}',
+        DATE(),
         DATETIME()
     )
 '''

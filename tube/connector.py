@@ -74,13 +74,18 @@ class TubeLogger(MetadataCollector):
         conn = sqlite3.connect(db_name)
         c = conn.cursor()
 
-        print('Populating {0}...'.format(target_tablename))
+        print('Populating: {0} for video_id: \'{1}\''.format(
+            target_tablename, self.video_id)
+            )
+
         query = self.create_insert_into_query(
             target_tablename=target_tablename
             )
 
         c.execute(query)
-        print('Finishing Transaction on {0}...'.format(target_tablename))
+        print('Finishing Transaction on: {0} for video_id: \'{1}\'\n'.format(
+            target_tablename, self.video_id)
+            )
 
         conn.commit()
         conn.close()
@@ -107,5 +112,6 @@ class MultiTubeWritter():
 
 test = TubeLogger(video_url='https://youtu.be/yzTuBuRdAyA')
 test.create_insert_into_query()
+
 test = MultiTubeWritter(video_collection=catalog)
 test.multivideo_meta_push_to_db()
