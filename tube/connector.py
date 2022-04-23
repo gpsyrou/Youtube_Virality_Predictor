@@ -20,10 +20,11 @@ params_path = os.path.join(CONFIGS_PATH, 'param.json')
 
 with open(catalog_path) as video_catalog_json:
     catalog = json.load(video_catalog_json)
-
+    video_catalog_json.close()
 
 with open(params_path) as params_json:
     params = json.load(params_json)
+    params_json.close()
 
 db_name = params['database_name']
 metadata_table_name = params['meta_table_name']
@@ -99,7 +100,8 @@ class MultiTubeWritter():
     def generate_video_list(self):
         video_url_list = []
         for video in self.video_collection['videos']:
-            video_url_list.append(video.get('url'))
+            if video.get('run'):
+                video_url_list.append(video.get('url'))
         return video_url_list
 
     def multivideo_meta_push_to_db(self) -> None:
@@ -110,8 +112,8 @@ class MultiTubeWritter():
                 )
 
 
-test = TubeLogger(video_url='https://youtu.be/yzTuBuRdAyA')
-test.create_insert_into_query()
+# test = TubeLogger(video_url='https://youtu.be/yzTuBuRdAyA')
+# test.create_insert_into_query()
 
-test = MultiTubeWritter(video_collection=catalog)
-test.multivideo_meta_push_to_db()
+logger = MultiTubeWritter(video_collection=catalog)
+logger.multivideo_meta_push_to_db()

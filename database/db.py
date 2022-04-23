@@ -1,7 +1,7 @@
 import sqlite3
-import os
+# import os
 
-#if os.path.exists('TubeDB.sqlite'):
+# if os.path.exists('TubeDB.sqlite'):
 #    os.remove('TubeDB.sqlite')
 
 db_name = 'TubeDB.sqlite'
@@ -40,7 +40,7 @@ def create_target_table(table_name: str):
              Video_Url TEXT NOT NULL,
              CreatedDate DATE,
              CreatedDatetime DATETIME,
-             
+
              CONSTRAINT uc_video_day UNIQUE (Video_id, CreatedDate)
         )
     '''.format(table_name)

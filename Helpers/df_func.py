@@ -3,6 +3,7 @@
 
 import pandas as pd
 
+
 def print_dataset_size(input_df: pd.DataFrame) -> None:
     """ Prints the number of rows and columns for a dataframe (@input_df)
     """
