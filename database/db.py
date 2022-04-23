@@ -25,23 +25,23 @@ def create_target_table(table_name: str):
     metadata_create_table_q = '''
         CREATE TABLE {0}
         (
-             {0}Id INTEGER PRIMARY KEY AUTOINCREMENT,
-             Channel_id TEXT NOT NULL,
-             Video_id TEXT NOT NULL,
+             {0}ID INTEGER PRIMARY KEY AUTOINCREMENT,
+             ChannelID TEXT NOT NULL,
+             VideoID TEXT NOT NULL,
              Title TEXT NOT NULL,
              Description TEXT NOT NULL,
              Thumbnail TEXT NOT NULL,
              Duration DECIMAL(10,5) NOT NULL,
              Genre TEXT NOT NULL,
              Regions TEXT NOT NULL,
-             Published_Date DATETIME NOT NULL,
-             Upload_Date DATETIME NOT NULL,
-             Number_Of_Views BIGINT NOT NULL,
-             Video_Url TEXT NOT NULL,
+             PublishedDate DATETIME NOT NULL,
+             UploadDate DATETIME NOT NULL,
+             NumberOfViews BIGINT NOT NULL,
+             VideoUrl TEXT NOT NULL,
              CreatedDate DATE,
              CreatedDatetime DATETIME,
 
-             CONSTRAINT uc_video_day UNIQUE (Video_id, CreatedDate)
+             CONSTRAINT uc_video_day UNIQUE (VideoId, CreatedDate)
         )
     '''.format(table_name)
 
@@ -54,18 +54,18 @@ def create_target_table(table_name: str):
 # Insert into target table query
 insert_into_q = '''
     INSERT INTO {0} (
-        Channel_id,
-        Video_id,
+        ChannelID,
+        VideoID,
         Title,
         Description,
         Thumbnail,
         Duration,
         Genre,
         Regions,
-        Published_Date,
-        Upload_Date,
-        Number_Of_Views,
-        Video_Url,
+        PublishedDate,
+        UploadDate,
+        NumberOfViews,
+        VideoUrl,
         CreatedDate,
         CreatedDatetime
     )
