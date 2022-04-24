@@ -55,7 +55,7 @@ class YoutubeMetaDataRetriever:
     def get_video_title(self, title_map={'name': 'title'}) -> str:
         title_tags = self.video_bsoup.find_all('meta', attrs=title_map)
         self.title = title_tags[0].get('content')
-        self.title= remove_chars(self.title)
+        self.title = remove_chars(self.title)
 
         return self.title
 
@@ -164,8 +164,13 @@ class MetadataCollector(YoutubeMetaDataRetriever):
         """
         channel_id = self.get_channel_id()
         video_id = self.get_video_id()
+        video_url = self.__get_video_url__()
 
-        id_dict = {'channel_id': channel_id, 'video_id': video_id}
+        id_dict = {
+            'channel_id': channel_id,
+            'video_id': video_id,
+            'video_url': video_url
+            }
 
         return id_dict
 

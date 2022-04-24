@@ -10,7 +10,7 @@ import json
 import sqlite3
 from tube.metadata import MetadataCollector
 from database.db import insert_into_q
-
+from tube.transformer import get_current_datetime
 
 CONFIGS_PATH = os.path.join(os.getcwd(), 'config')
 
@@ -37,7 +37,14 @@ class TubeLogger(MetadataCollector):
 
     def create_dataframe_for_video(self) -> pd.DataFrame:
         meta_info_dict = self.merge_video_meta_info()
+        print('Creating metadata df for video_id: \'{0}\''.format(
+            self.video_id)
+            )
         df = pd.DataFrame.from_records([meta_info_dict])
+
+        curr_time = get_current_datetime()
+        df['CreatedDate'] = curr_time.split(' ')[0]
+        df['CreatedDatetime'] = curr_time
 
         return df
 
@@ -92,7 +99,7 @@ class TubeLogger(MetadataCollector):
         conn.close()
 
 
-class MultiTubeWritter():
+class TubeMultiWritter():
     def __init__(self, video_collection: dict):
         self.video_collection = video_collection
         self.video_url_list = self.generate_video_list()
@@ -111,9 +118,32 @@ class MultiTubeWritter():
                 target_tablename=metadata_table_name
                 )
 
+    def combine_video_dataframes(self) -> pd.DataFrame:
+        all_videos_df = pd.DataFrame()
+        for video_url in self.video_url_list:
+            video = TubeLogger(video_url=video_url)
+            video_df = video.create_dataframe_for_video()
+            all_videos_df = all_videos_df.append(video_df)
+        return all_videos_df
+
+    def video_dataframes_to_csv(self, filename: str) -> None:
+        if not os.path.isfile(filename):
+            pd.DataFrame().to_csv(filename, index=True)
+        df_history = pd.read_csv(filename, index_col=[0])
+        all_videos_df = self.combine_video_dataframes()
+
+        df_history = df_history.append(all_videos_df)
+        print('\nUpdating metadata file at: {0}\n'.format(filename))
+        df_history.to_csv(filename, index=True)
+
 
 # test = TubeLogger(video_url='https://youtu.be/yzTuBuRdAyA')
 # test.create_insert_into_query()
 
-logger = MultiTubeWritter(video_collection=catalog)
+logger = TubeMultiWritter(video_collection=catalog)
 logger.multivideo_meta_push_to_db()
+logger.video_dataframes_to_csv(filename='video_metadata.csv')
+
+
+test1 = TubeLogger(video_url='https://youtu.be/yzTuBuRdAyA')
+test2 = TubeLogger(video_url='https://youtu.be/NcXsK_u4ixI')
