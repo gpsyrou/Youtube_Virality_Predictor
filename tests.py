@@ -7,9 +7,9 @@ video_url = 'https://youtu.be/iByQSaWTR1g'
 
 
 class TestMainInfo(unittest.TestCase):
-    
+
     def testVideoURLImport(
-            self, 
+            self,
             err_msg: str = 'Video URL is not imported properly'
     ):
         video = YoutubeMetaDataRetriever(video_url=video_url)
@@ -18,7 +18,6 @@ class TestMainInfo(unittest.TestCase):
 
 
 class TestMetaDataRetrievalInfo(unittest.TestCase):
-    
 
     def testDurationTransformationMinutes(
             self,
@@ -27,7 +26,6 @@ class TestMetaDataRetrievalInfo(unittest.TestCase):
         video = YoutubeMetaDataRetriever(video_url=video_url)
         duration = video.get_video_duration(target_format='minutes')
         self.assertEqual(8.5167, np.round(duration, 4), msg=err_msg)
-
 
     def testDurationTransformationSeconds(
             self,

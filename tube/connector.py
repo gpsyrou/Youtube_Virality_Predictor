@@ -4,6 +4,7 @@ Author: Georgios Spyrou (georgios.spyrou1@gmail.com")
 Package to collect metadata for Youtube Videos and apply formatting and
 transformations to prepare the data for further analysis.
 """
+
 import os
 import pandas as pd
 import json
@@ -126,7 +127,7 @@ class TubeMultiWritter():
             all_videos_df = all_videos_df.append(video_df)
         return all_videos_df
 
-    def video_dataframes_to_csv(self, filename: str) -> None:
+    def write_dataframes_to_csv(self, filename: str) -> None:
         if not os.path.isfile(filename):
             pd.DataFrame().to_csv(filename, index=True)
         df_history = pd.read_csv(filename, index_col=[0])
@@ -135,15 +136,3 @@ class TubeMultiWritter():
         df_history = df_history.append(all_videos_df)
         print('\nUpdating metadata file at: {0}\n'.format(filename))
         df_history.to_csv(filename, index=True)
-
-
-# test = TubeLogger(video_url='https://youtu.be/yzTuBuRdAyA')
-# test.create_insert_into_query()
-
-logger = TubeMultiWritter(video_collection=catalog)
-logger.multivideo_meta_push_to_db()
-logger.video_dataframes_to_csv(filename='video_metadata.csv')
-
-
-test1 = TubeLogger(video_url='https://youtu.be/yzTuBuRdAyA')
-test2 = TubeLogger(video_url='https://youtu.be/NcXsK_u4ixI')

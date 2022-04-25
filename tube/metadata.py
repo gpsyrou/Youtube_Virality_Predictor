@@ -8,6 +8,7 @@ upload date and more.
 
 
 import urllib.request
+import numpy as np
 from typing import Dict, Any
 from bs4 import BeautifulSoup, element
 from tube.transformer import transform_pt_format, remove_chars
@@ -97,10 +98,11 @@ class YoutubeMetaDataRetriever:
             target_format: str = 'minutes'
     ) -> float:
         self.pt_format = self.get_duration_in_pt(duration_map=duration_map)
-        self.video_duration = transform_pt_format(
+        video_duration = transform_pt_format(
             pt=self.pt_format,
             target_format=target_format
             )
+        self.video_duration = np.round(video_duration, 4)
 
         return self.video_duration
 
