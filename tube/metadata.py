@@ -1,16 +1,18 @@
 """
 Author: Georgios Spyrou (georgios.spyrou1@gmail.com")
 
-Purpose: A collection of classes/methods to efficiently connect to youtube 
+Purpose: A collection of classes/methods to efficiently connect to youtube
 videos and retrieve metadata information, such as number of views, channel_id,
 upload date and more.
 """
 
 
 import urllib.request
+import re
+import numpy as np
 from typing import Dict, Any
-from bs4 import (BeautifulSoup, element)
-from tube.transformer import transform_pt_format
+from bs4 import BeautifulSoup, element
+from tube.transformer import transform_pt_format, remove_chars
 
 
 class YoutubeMetaDataRetriever:
@@ -22,7 +24,7 @@ class YoutubeMetaDataRetriever:
 
     def url_to_bs4(self, video_url: str) -> BeautifulSoup:
         """
-        Given a website link (URL), retrieve the corresponding website in an 
+        Given a website link (URL), retrieve the corresponding website in an
         html format.
         Parameters
         ----------
@@ -32,7 +34,7 @@ class YoutubeMetaDataRetriever:
         # print('Attempting to retrieve HTML object for {0}'.format(video_url))
         request = urllib.request.urlopen(video_url)
         if request.getcode() != 200:
-            raise Exception('Can not communicate with the client')        
+            raise Exception('Can not communicate with the client')
         else:
             response = request.read()
             response_html = BeautifulSoup(response, 'html.parser')
@@ -55,6 +57,7 @@ class YoutubeMetaDataRetriever:
     def get_video_title(self, title_map={'name': 'title'}) -> str:
         title_tags = self.video_bsoup.find_all('meta', attrs=title_map)
         self.title = title_tags[0].get('content')
+        self.title = remove_chars(self.title)
 
         return self.title
 
@@ -63,6 +66,7 @@ class YoutubeMetaDataRetriever:
             descr_map={'property': 'og:description'}) -> str:
         self.description = self.video_bsoup.find('meta', attrs=descr_map)
         self.description = self.description.get('content')
+        self.description = remove_chars(self.description)
 
         return self.description
 
@@ -95,20 +99,24 @@ class YoutubeMetaDataRetriever:
             target_format: str = 'minutes'
     ) -> float:
         self.pt_format = self.get_duration_in_pt(duration_map=duration_map)
-        self.video_duration = transform_pt_format(
+        video_duration = transform_pt_format(
             pt=self.pt_format,
             target_format=target_format
             )
+        self.video_duration = np.round(video_duration, 4)
 
         return self.video_duration
 
     def get_published_date(
             self, publishdt_map={'itemprop': 'datePublished'}
     ) -> str:
-        self.publised_date = self.video_bsoup.find('meta', attrs=publishdt_map)
-        self.publised_date = self.publised_date.get('content')
+        self.published_date = self.video_bsoup.find(
+            'meta',
+            attrs=publishdt_map
+            )
+        self.published_date = self.published_date.get('content')
 
-        return self.publised_date
+        return self.published_date
 
     def get_upload_date(self, uploaddt_map={'itemprop': 'uploadDate'}) -> str:
         self.upload_date = self.video_bsoup.find('meta', attrs=uploaddt_map)
@@ -128,9 +136,15 @@ class YoutubeMetaDataRetriever:
     ) -> str:
         self.regions_allowed = self.video_bsoup.find('meta', attrs=regions_map)
         self.regions_allowed = self.regions_allowed.get('content')
-        self.regions_allowed = list(self.regions_allowed.split(","))
 
         return str(self.regions_allowed)
+    
+    def get_current_number_of_likes(self):
+        breaker = str(self.video_bsoup).find('likes')
+        likes_text = str(self.video_bsoup)[breaker-20:breaker+5]
+        number_of_likes = re.findall(r'[\d,]+.', likes_text)[0].strip()
+        self.number_of_likes = int(number_of_likes.replace(',', ''))
+        return self.number_of_likes
 
 
 class MetadataCollector(YoutubeMetaDataRetriever):
@@ -145,8 +159,10 @@ class MetadataCollector(YoutubeMetaDataRetriever):
             number_of_views
         """
         number_of_views = self.get_current_number_of_views()
+        number_of_likes = self.get_current_number_of_likes()
 
-        variable_dict = {'number_of_views': number_of_views}
+        variable_dict = {'number_of_views': number_of_views, 
+                         'number_of_likes': number_of_likes}
 
         return variable_dict
 
@@ -160,8 +176,13 @@ class MetadataCollector(YoutubeMetaDataRetriever):
         """
         channel_id = self.get_channel_id()
         video_id = self.get_video_id()
+        video_url = self.__get_video_url__()
 
-        id_dict = {'channel_id': channel_id, 'video_id': video_id}
+        id_dict = {
+            'channel_id': channel_id,
+            'video_id': video_id,
+            'video_url': video_url
+            }
 
         return id_dict
 

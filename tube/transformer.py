@@ -1,12 +1,16 @@
 """
 Author: Georgios Spyrou (georgios.spyrou1@gmail.com")
 
-Purpose: A collection of functions/methods used to support the metadata 
-retrieval process. Support the main collector.py script to perform data 
+Purpose: A collection of functions/methods used to support the metadata
+retrieval process. Support the main collector.py script to perform data
 transformation operations.
 """
 
 import datetime
+from typing import List
+
+global chars
+chars = ['"', '\'']
 
 
 def transform_pt_format(pt: str, target_format: str = 'minutes') -> float:
@@ -44,3 +48,12 @@ def get_current_datetime(as_type='str') -> str:
         return time_now
     else:
         raise ValueError('The specified date time is not valid..!')
+
+
+def remove_chars(s: str, chars: List[str] = chars) -> str:
+    """ Removes the characters contained in chars from string s
+    """
+    for char in chars:
+        if char in s:
+            s = s.replace(char, '')
+    return s
