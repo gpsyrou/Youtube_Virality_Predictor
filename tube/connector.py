@@ -71,6 +71,7 @@ class TubeLogger(MetadataCollector):
             self.published_date,
             self.upload_date,
             self.number_of_views,
+            self.number_of_likes,
             self.video_url
             )
         return self.insert_query

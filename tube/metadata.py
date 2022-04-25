@@ -8,6 +8,7 @@ upload date and more.
 
 
 import urllib.request
+import re
 import numpy as np
 from typing import Dict, Any
 from bs4 import BeautifulSoup, element
@@ -137,6 +138,13 @@ class YoutubeMetaDataRetriever:
         self.regions_allowed = self.regions_allowed.get('content')
 
         return str(self.regions_allowed)
+    
+    def get_current_number_of_likes(self):
+        breaker = str(self.video_bsoup).find('likes')
+        likes_text = str(self.video_bsoup)[breaker-20:breaker+5]
+        number_of_likes = re.findall(r'[\d,]+.', likes_text)[0].strip()
+        self.number_of_likes = int(number_of_likes.replace(',', ''))
+        return self.number_of_likes
 
 
 class MetadataCollector(YoutubeMetaDataRetriever):
@@ -151,8 +159,10 @@ class MetadataCollector(YoutubeMetaDataRetriever):
             number_of_views
         """
         number_of_views = self.get_current_number_of_views()
+        number_of_likes = self.get_current_number_of_likes()
 
-        variable_dict = {'number_of_views': number_of_views}
+        variable_dict = {'number_of_views': number_of_views, 
+                         'number_of_likes': number_of_likes}
 
         return variable_dict
 

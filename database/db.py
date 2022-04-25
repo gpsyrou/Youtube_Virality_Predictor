@@ -36,7 +36,8 @@ def create_target_table(table_name: str):
              Regions TEXT NOT NULL,
              PublishedDate DATETIME NOT NULL,
              UploadDate DATETIME NOT NULL,
-             NumberOfViews BIGINT NOT NULL,
+             NumberOfViews BIGINT NULL,
+             NumberOfLikes BIGINT NULL,
              VideoUrl TEXT NOT NULL,
              CreatedDate DATE,
              CreatedDatetime DATETIME,
@@ -65,6 +66,7 @@ insert_into_q = '''
         PublishedDate,
         UploadDate,
         NumberOfViews,
+        NumberOfLikes,
         VideoUrl,
         CreatedDate,
         CreatedDatetime
@@ -82,7 +84,8 @@ insert_into_q = '''
         '{9}',
         '{10}',
          {11},
-        '{12}',
+         {12},
+        '{13}',
         DATE(),
         DATETIME()
     )
