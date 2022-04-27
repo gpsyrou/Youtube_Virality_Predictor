@@ -138,7 +138,7 @@ class YoutubeMetaDataRetriever:
         self.regions_allowed = self.regions_allowed.get('content')
 
         return str(self.regions_allowed)
-    
+
     def get_current_number_of_likes(self):
         breaker = str(self.video_bsoup).find('likes')
         likes_text = str(self.video_bsoup)[breaker-20:breaker+5]
@@ -161,7 +161,7 @@ class MetadataCollector(YoutubeMetaDataRetriever):
         number_of_views = self.get_current_number_of_views()
         number_of_likes = self.get_current_number_of_likes()
 
-        variable_dict = {'number_of_views': number_of_views, 
+        variable_dict = {'number_of_views': number_of_views,
                          'number_of_likes': number_of_likes}
 
         return variable_dict
