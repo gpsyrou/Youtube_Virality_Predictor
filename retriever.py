@@ -7,7 +7,7 @@ transformations to prepare the data for further analysis.
 
 import os
 import json
-from tube.connector import TubeLogger, TubeMultiWritter
+from tube.connector import TubeMultiWritter
 
 CONFIGS_PATH = os.path.join(os.getcwd(), 'config')
 
@@ -27,8 +27,6 @@ db_name = params['database_name']
 metadata_table_name = params['meta_table_name']
 
 logger = TubeMultiWritter(video_collection=catalog)
+
 logger.multivideo_meta_push_to_db()
 logger.write_dataframes_to_csv(filename='video_metadata.csv')
-
-test1 = TubeLogger(video_url='https://youtu.be/yzTuBuRdAyA')
-test2 = TubeLogger(video_url='https://youtu.be/NcXsK_u4ixI')
