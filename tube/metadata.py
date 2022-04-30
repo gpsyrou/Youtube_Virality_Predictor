@@ -142,7 +142,7 @@ class VideoMetadataCollector(TubeVideoMetaDataRetriever):
         number_of_views = self.get_current_number_of_views()
         number_of_likes = self.get_current_number_of_likes()
 
-        variable_dict = {'number_of_views': number_of_views, 
+        variable_dict = {'number_of_views': number_of_views,
                          'number_of_likes': number_of_likes}
 
         return variable_dict

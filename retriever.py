@@ -29,6 +29,3 @@ metadata_table_name = params['meta_table_name']
 logger = TubeVideoMultiWritter(video_collection=catalog)
 logger.multivideo_meta_push_to_db()
 logger.write_dataframes_to_csv(filename='video_metadata.csv')
-
-test1 = TubeVideoLogger(video_url='https://youtu.be/yzTuBuRdAyA')
-test2 = TubeVideoLogger(video_url='https://youtu.be/NcXsK_u4ixI')
