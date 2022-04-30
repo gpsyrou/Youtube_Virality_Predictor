@@ -7,38 +7,19 @@ upload date and more.
 """
 
 
-import urllib.request
 import re
 import numpy as np
 from typing import Dict, Any
-from bs4 import BeautifulSoup, element
-from tube.transformer import transform_pt_format, remove_chars
+from bs4 import element
+from tube.transformer import transform_pt_format, remove_chars, url_to_bs4
 
 
-class YoutubeMetaDataRetriever:
+class TubeVideoMetaDataRetriever:
     """ Class to retrieve and analyzer information of Youtube videos.
     """
     def __init__(self, video_url: str):
         self.video_url = video_url
-        self.video_bsoup = self.url_to_bs4(video_url=video_url)
-
-    def url_to_bs4(self, video_url: str) -> BeautifulSoup:
-        """
-        Given a website link (URL), retrieve the corresponding website in an
-        html format.
-        Parameters
-        ----------
-        video_url : str
-            URL of the webpage that will be transformed to a BeautifulSoup obj.
-        """
-        # print('Attempting to retrieve HTML object for {0}'.format(video_url))
-        request = urllib.request.urlopen(video_url)
-        if request.getcode() != 200:
-            raise Exception('Can not communicate with the client')
-        else:
-            response = request.read()
-            response_html = BeautifulSoup(response, 'html.parser')
-            return response_html
+        self.video_bsoup = url_to_bs4(video_url=video_url)
 
     def __meta_content_tags__(self) -> element.ResultSet:
         return self.video_bsoup.find_all('meta')
@@ -138,7 +119,7 @@ class YoutubeMetaDataRetriever:
         self.regions_allowed = self.regions_allowed.get('content')
 
         return str(self.regions_allowed)
-    
+
     def get_current_number_of_likes(self):
         breaker = str(self.video_bsoup).find('likes')
         likes_text = str(self.video_bsoup)[breaker-20:breaker+5]
@@ -147,9 +128,9 @@ class YoutubeMetaDataRetriever:
         return self.number_of_likes
 
 
-class MetadataCollector(YoutubeMetaDataRetriever):
+class VideoMetadataCollector(TubeVideoMetaDataRetriever):
     def __init__(self, video_url: str):
-        YoutubeMetaDataRetriever.__init__(self, video_url=video_url)
+        TubeVideoMetaDataRetriever.__init__(self, video_url=video_url)
 
     def collect_variable_metadata(self) -> Dict[str, int]:
         """ Returns a collection of video information that is variable in time.
@@ -231,3 +212,17 @@ class MetadataCollector(YoutubeMetaDataRetriever):
         var = self.collect_variable_metadata()
 
         return {**ids, **descr, **dates, **var}
+
+
+class TubeChannelMetaDataRetriever:
+    """ Class to retrieve and analyzer information of Youtube channels.
+    """
+    def __init__(self, channel_url: str):
+        self.channel_url = channel_url
+        self.channel_bsoup = url_to_bs4(url=channel_url)
+
+    def __meta_content_tags__(self) -> element.ResultSet:
+        return self.channel_bsoup.find_all('meta')
+
+    def __get_channel_url__(self) -> str:
+        pass

@@ -9,7 +9,7 @@ import os
 import pandas as pd
 import json
 import sqlite3
-from tube.metadata import MetadataCollector
+from tube.metadata import VideoMetadataCollector
 from database.db import insert_into_q
 from tube.transformer import get_current_datetime
 
@@ -31,9 +31,9 @@ db_name = params['database_name']
 metadata_table_name = params['meta_table_name']
 
 
-class TubeLogger(MetadataCollector):
+class TubeVideoLogger(VideoMetadataCollector):
     def __init__(self, video_url: str):
-        MetadataCollector.__init__(self, video_url=video_url)
+        VideoMetadataCollector.__init__(self, video_url=video_url)
         self.data = self.merge_video_meta_info()
 
     def create_dataframe_for_video(self) -> pd.DataFrame:
@@ -101,7 +101,7 @@ class TubeLogger(MetadataCollector):
         conn.close()
 
 
-class TubeMultiWritter():
+class TubeVideoMultiWritter():
     def __init__(self, video_collection: dict):
         self.video_collection = video_collection
         self.video_url_list = self.generate_video_list()
@@ -115,7 +115,7 @@ class TubeMultiWritter():
 
     def multivideo_meta_push_to_db(self) -> None:
         for video_url in self.video_url_list:
-            video = TubeLogger(video_url=video_url)
+            video = TubeVideoLogger(video_url=video_url)
             video.insert_into_metadata_table(
                 target_tablename=metadata_table_name
                 )
@@ -123,7 +123,7 @@ class TubeMultiWritter():
     def combine_video_dataframes(self) -> pd.DataFrame:
         all_videos_df = pd.DataFrame()
         for video_url in self.video_url_list:
-            video = TubeLogger(video_url=video_url)
+            video = TubeVideoLogger(video_url=video_url)
             video_df = video.create_dataframe_for_video()
             all_videos_df = all_videos_df.append(video_df)
         return all_videos_df
