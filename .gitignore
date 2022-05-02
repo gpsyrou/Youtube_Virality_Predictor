@@ -2,3 +2,4 @@ Data/
 Data/thumbnails
 Data/sample_submission.csv
 TubeDB.sqlite
+**/__pycache__
