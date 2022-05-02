@@ -213,6 +213,8 @@ class VideoMetadataCollector(TubeVideoMetaDataRetriever):
 
         return {**ids, **descr, **dates, **var}
 
+t = 'https://www.youtube.com/c/MrBeast6000'
+ch = TubeChannelMetaDataRetriever(channel_url=t)
 
 class TubeChannelMetaDataRetriever:
     """ Class to retrieve and analyzer information of Youtube channels.
@@ -220,9 +222,22 @@ class TubeChannelMetaDataRetriever:
     def __init__(self, channel_url: str):
         self.channel_url = channel_url
         self.channel_bsoup = url_to_bs4(url=channel_url)
+        self.channel_id = self.get_channel_id()
 
     def __meta_content_tags__(self) -> element.ResultSet:
         return self.channel_bsoup.find_all('meta')
 
-    def __get_channel_url__(self) -> str:
-        pass
+    def get_channel_id(self, channel_id_map={'itemprop': 'channelId'}) -> str:
+        channel_id = self.channel_bsoup.find_all(
+            'meta', 
+            attrs=channel_id_map
+            )
+        self.channel_id = channel_id[0].get('content')
+        return self.channel_id
+
+    def get_channel_friendliness(self, channel_friendly_map={'itemprop': 'isFamilyFriendly'}) -> bool:
+        friendly = self.channel_bsoup.find('meta', attrs=channel_friendly_map)
+        self.friendly = bool(friendly.get('content'))
+        return self.friendly
+
+        
