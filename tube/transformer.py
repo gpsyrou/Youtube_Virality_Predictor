@@ -78,3 +78,16 @@ def url_to_bs4(url: str) -> BeautifulSoup:
         response = request.read()
         response_html = BeautifulSoup(response, 'html.parser')
         return response_html
+
+
+def subscribers_str_to_int(s: str) -> int:
+    """ Transforms a string indicating the number of channel substribers
+    into a integer format.
+    """
+    s = s.lower()
+    if 'million' in s:
+        return float(s.split(' ')[0]) * 1000000
+    elif 'k' in s:
+        return float(s.split('k')[0]) * 1000
+    else:
+        return float(s)

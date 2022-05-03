@@ -11,7 +11,9 @@ import re
 import numpy as np
 from typing import Dict, Any
 from bs4 import element
-from tube.transformer import transform_pt_format, remove_chars, url_to_bs4
+from tube.transformer import (transform_pt_format, 
+                              remove_chars, url_to_bs4, 
+                              subscribers_str_to_int)
 
 
 class TubeVideoMetaDataRetriever:
@@ -224,6 +226,9 @@ class TubeChannelMetaDataRetriever:
 
     def __meta_content_tags__(self) -> element.ResultSet:
         return self.channel_bsoup.find_all('meta')
+    
+    def __div_content_tags__(self) -> element.ResultSet:
+        return self.channel_bsoup.find_all('div')
 
     def get_channel_id(self, channel_id_map={'itemprop': 'channelId'}) -> str:
         channel_id = self.channel_bsoup.find_all(
@@ -267,8 +272,29 @@ class TubeChannelMetaDataRetriever:
         return self.membership
 
 
-t = 'https://www.youtube.com/c/MrBeast6000'
+    def get_number_of_subscribers(self) -> str:
+        s = re.findall(
+            pattern=r'"subscriberCountText".+?subscribers', 
+            string=str(self.channel_bsoup)
+            )
+        subs = s[-1].split('"')[-1]
+        subs = subs.replace('subscribers', '').strip()
+        subs = int(subscribers_str_to_int(subs))
+        
+        return subs
+
+
+t = 'https://www.youtube.com/c/MrBeast6000/'
+z = 'https://www.youtube.com/c/EdSheeran/'
+f = 'https://www.youtube.com/c/NianLi%C3%86/'
+d = 'https://www.youtube.com/channel/UCj_ctckPEilz67WE2-kzYig'
+
 ch = TubeChannelMetaDataRetriever(channel_url=t)
-ch.get_channel_description()
-ch.is_paid_membership()
-ch.is_family_friendly()
+ch2 = TubeChannelMetaDataRetriever(channel_url=z)
+ch3 = TubeChannelMetaDataRetriever(channel_url=f)
+ch4 = TubeChannelMetaDataRetriever(channel_url=d)
+
+ch.get_number_of_subscribers()
+ch2.get_number_of_subscribers()
+ch3.get_number_of_subscribers()
+ch4.get_number_of_subscribers()
