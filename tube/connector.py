@@ -35,6 +35,7 @@ class TubeVideoLogger(VideoMetadataCollector):
     def __init__(self, video_url: str):
         VideoMetadataCollector.__init__(self, video_url=video_url)
         self.data = self.merge_video_meta_info()
+        # self.variable_metadata = self.collect_variable_metadata()
 
     def create_dataframe_for_video(self) -> pd.DataFrame:
         meta_info_dict = self.merge_video_meta_info()

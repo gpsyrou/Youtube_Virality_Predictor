@@ -213,8 +213,6 @@ class VideoMetadataCollector(TubeVideoMetaDataRetriever):
 
         return {**ids, **descr, **dates, **var}
 
-t = 'https://www.youtube.com/c/MrBeast6000'
-ch = TubeChannelMetaDataRetriever(channel_url=t)
 
 class TubeChannelMetaDataRetriever:
     """ Class to retrieve and analyzer information of Youtube channels.
@@ -229,15 +227,48 @@ class TubeChannelMetaDataRetriever:
 
     def get_channel_id(self, channel_id_map={'itemprop': 'channelId'}) -> str:
         channel_id = self.channel_bsoup.find_all(
-            'meta', 
+            'meta',
             attrs=channel_id_map
             )
         self.channel_id = channel_id[0].get('content')
         return self.channel_id
 
-    def get_channel_friendliness(self, channel_friendly_map={'itemprop': 'isFamilyFriendly'}) -> bool:
+    def is_family_friendly(
+            self,
+            channel_friendly_map={'itemprop': 'isFamilyFriendly'}
+    ) -> bool:
         friendly = self.channel_bsoup.find('meta', attrs=channel_friendly_map)
-        self.friendly = bool(friendly.get('content'))
+        friendly = friendly.get('content')
+        if friendly == 'true':
+            self.friendly = True
+        else:
+            self.friendly = False
         return self.friendly
 
-        
+    def get_channel_description(
+            self,
+            descr_map={'itemprop': 'description'}
+    ) -> str:
+        description = self.channel_bsoup.find('meta', attrs=descr_map)
+        description = description.get('content')
+        self.description = remove_chars(description)
+        return self.description
+
+    def is_paid_membership(
+            self,
+            membership_map={'itemprop': 'paid'}
+    ) -> bool:
+        membership = self.channel_bsoup.find('meta', attrs=membership_map)
+        self.membership = membership.get('content')
+        if membership == 'true':
+            self.membership = True
+        else:
+            self.membership = False
+        return self.membership
+
+
+t = 'https://www.youtube.com/c/MrBeast6000'
+ch = TubeChannelMetaDataRetriever(channel_url=t)
+ch.get_channel_description()
+ch.is_paid_membership()
+ch.is_family_friendly()
