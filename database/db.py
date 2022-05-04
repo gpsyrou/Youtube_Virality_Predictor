@@ -1,8 +1,4 @@
 import sqlite3
-# import os
-
-# if os.path.exists('TubeDB.sqlite'):
-#    os.remove('TubeDB.sqlite')
 
 db_name = 'TubeDB.sqlite'
 metadata_table_name = 'TubeMetadata'
@@ -86,6 +82,108 @@ insert_into_q = '''
          {11},
          {12},
         '{13}',
+        DATE(),
+        DATETIME()
+    )
+'''
+
+
+def create_video_header_table(table_name: str):
+    videos_header_create_table_q = '''
+        CREATE TABLE {0}
+        (
+             {0}ID INTEGER PRIMARY KEY AUTOINCREMENT,
+             ChannelID TEXT NOT NULL,
+             VideoID TEXT NOT NULL,
+             Title TEXT NOT NULL,
+             Description TEXT NOT NULL,
+             Thumbnail TEXT NOT NULL,
+             Duration DECIMAL(10,5) NOT NULL,
+             Genre TEXT NOT NULL,
+             Regions TEXT NOT NULL,
+             PublishedDate DATETIME NOT NULL,
+             UploadDate DATETIME NOT NULL,
+             VideoUrl TEXT NOT NULL,
+             CreatedDate DATE,
+             CreatedDatetime DATETIME,
+
+             CONSTRAINT uc_video_day UNIQUE (VideoId, CreatedDate)
+        )
+    '''.format(table_name)
+
+    c.execute(videos_header_create_table_q)
+    conn.commit()
+
+
+def create_video_lines_table(table_name: str):
+    videos_lines_create_table_q = '''
+        CREATE TABLE {0}
+        (
+             {0}ID INTEGER PRIMARY KEY AUTOINCREMENT,
+             ChannelID TEXT NOT NULL,
+             VideoID TEXT NOT NULL,
+             NumberOfViews BIGINT NULL,
+             NumberOfLikes BIGINT NULL,
+             CreatedDate DATE,
+             CreatedDatetime DATETIME,
+
+             CONSTRAINT uc_video_day UNIQUE (VideoId, CreatedDate)
+        )
+    '''.format(table_name)
+
+    c.execute(videos_lines_create_table_q)
+    conn.commit()
+
+
+insert_into_video_header_q = '''
+    INSERT INTO {0} (
+        ChannelID,
+        VideoID,
+        Title,
+        Description,
+        Thumbnail,
+        Duration,
+        Genre,
+        Regions,
+        PublishedDate,
+        UploadDate,
+        VideoUrl,
+        CreatedDate,
+        CreatedDatetime
+    )
+    VALUES
+    (
+        '{1}',
+        '{2}',
+        '{3}',
+        '{4}',
+        '{5}',
+         {6},
+        '{7}',
+        '{8}',
+         {9},
+         {10},
+        '{11}',
+        DATE(),
+        DATETIME()
+    )
+'''
+
+insert_into_video_lines_q = '''
+    INSERT INTO {0} (
+        ChannelID,
+        VideoID,
+        NumberOfViews,
+        NumberOfLikes,
+        CreatedDate,
+        CreatedDatetime
+    )
+    VALUES
+    (
+        '{1}',
+        '{2}',
+         {3},
+         {4},
         DATE(),
         DATETIME()
     )
