@@ -271,16 +271,15 @@ class TubeChannelMetaDataRetriever:
             self.membership = False
         return self.membership
 
-
     def get_number_of_subscribers(self) -> str:
         s = re.findall(
-            pattern=r'"subscriberCountText".+?subscribers', 
+            pattern=r'"subscriberCountText".+?subscribers',
             string=str(self.channel_bsoup)
             )
         subs = s[-1].split('"')[-1]
         subs = subs.replace('subscribers', '').strip()
         subs = int(subscribers_str_to_int(subs))
-        
+
         return subs
 
 
