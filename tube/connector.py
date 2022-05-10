@@ -10,10 +10,11 @@ import pandas as pd
 import json
 import sqlite3
 from tube.metadata import VideoMetadataCollector
-from database.db import (insert_into_q,
-                        insert_into_video_lines_q,
-                        insert_into_video_header_q
-                        )
+from database.db import (
+    insert_into_q,
+    insert_into_video_lines_q,
+    insert_into_video_header_q
+    )
 from tube.transformer import get_current_datetime
 
 CONFIGS_PATH = os.path.join(os.getcwd(), 'config')
@@ -82,11 +83,40 @@ class TubeVideoLogger(VideoMetadataCollector):
             )
         return self.insert_query
 
-    def create_insert_into_header_query():
-        pass
+    def create_insert_into_header_query(
+        self,
+        q: str = insert_into_video_header_q,
+        target_tablename: str = header_table_name
+    ) -> str:
+        self.insert_query_header = q.format(
+            target_tablename,
+            self.channel_id,
+            self.video_id,
+            self.title,
+            self.description,
+            self.thumbnail,
+            self.video_duration,
+            self.video_genre,
+            self.regions_allowed,
+            self.published_date,
+            self.upload_date,
+            self.video_url
+            )
+        return self.insert_query_header
 
-    def create_insert_into_lines_query():
-        pass
+    def create_insert_into_lines_query(
+        self,
+        q: str = insert_into_video_lines_q,
+        target_tablename: str = lines_table_name
+    ) -> str:
+        self.insert_query_lines = q.format(
+            target_tablename,
+            self.channel_id,
+            self.video_id,
+            self.number_of_views,
+            self.number_of_likes
+            )
+        return self.insert_query_lines
 
     def insert_into_metadata_table(
         self,
@@ -112,6 +142,27 @@ class TubeVideoLogger(VideoMetadataCollector):
         conn.commit()
         conn.close()
 
+    def insert_into_header_table(
+        self,
+        target_tablename: str = header_table_name
+    ) -> None:
+        conn = sqlite3.connect(db_name)
+        c = conn.cursor()
+        print('Populating: {0} for video_id: \'{1}\''.format(
+            target_tablename, self.video_id)
+            )
+        query = self.create_insert_into_header_query(
+            target_tablename=target_tablename
+            )
+
+        c.execute(query)
+        print('Finishing Transaction on: {0} for video_id: \'{1}\'\n'.format(
+            target_tablename, self.video_id)
+            )
+
+        conn.commit()
+        conn.close()
+
     def insert_into_lines_table(
         self,
         target_tablename: str = lines_table_name
@@ -121,7 +172,7 @@ class TubeVideoLogger(VideoMetadataCollector):
         print('Populating: {0} for video_id: \'{1}\''.format(
             target_tablename, self.video_id)
             )
-        query = self.create_insert_into_query(
+        query = self.create_insert_into_lines_query(
             target_tablename=target_tablename
             )
 
