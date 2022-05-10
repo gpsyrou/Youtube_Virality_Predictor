@@ -226,7 +226,7 @@ class TubeChannelMetaDataRetriever:
 
     def __meta_content_tags__(self) -> element.ResultSet:
         return self.channel_bsoup.find_all('meta')
-    
+
     def __div_content_tags__(self) -> element.ResultSet:
         return self.channel_bsoup.find_all('div')
 

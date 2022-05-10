@@ -1,1 +1,6 @@
-{    "database_name": "TubeDB.sqlite",    "meta_table_name": "TubeMetadata"}
+{
+    "database_name": "TubeDB.sqlite",
+    "meta_table_name": "TubeMetadata",
+    "header_table_name": "TubeMetadataHeader",
+    "lines_table_name": "TubeMetadataLines"
+}

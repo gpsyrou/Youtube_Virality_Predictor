@@ -2,6 +2,8 @@ import sqlite3
 
 db_name = 'TubeDB.sqlite'
 metadata_table_name = 'TubeMetadata'
+header_table_name = 'TubeMetadataHeader'
+lines_table_name = 'TubeMetadataLines'
 
 conn = sqlite3.connect(db_name)
 c = conn.cursor()
@@ -88,6 +90,7 @@ insert_into_q = '''
 '''
 
 
+# Header
 def create_video_header_table(table_name: str):
     videos_header_create_table_q = '''
         CREATE TABLE {0}
@@ -112,26 +115,6 @@ def create_video_header_table(table_name: str):
     '''.format(table_name)
 
     c.execute(videos_header_create_table_q)
-    conn.commit()
-
-
-def create_video_lines_table(table_name: str):
-    videos_lines_create_table_q = '''
-        CREATE TABLE {0}
-        (
-             {0}ID INTEGER PRIMARY KEY AUTOINCREMENT,
-             ChannelID TEXT NOT NULL,
-             VideoID TEXT NOT NULL,
-             NumberOfViews BIGINT NULL,
-             NumberOfLikes BIGINT NULL,
-             CreatedDate DATE,
-             CreatedDatetime DATETIME,
-
-             CONSTRAINT uc_video_day UNIQUE (VideoId, CreatedDate)
-        )
-    '''.format(table_name)
-
-    c.execute(videos_lines_create_table_q)
     conn.commit()
 
 
@@ -169,6 +152,30 @@ insert_into_video_header_q = '''
     )
 '''
 
+# create_video_header_table(table_name=header_table_name)
+
+
+# Lines
+def create_video_lines_table(table_name: str):
+    videos_lines_create_table_q = '''
+        CREATE TABLE {0}
+        (
+             {0}ID INTEGER PRIMARY KEY AUTOINCREMENT,
+             ChannelID TEXT NOT NULL,
+             VideoID TEXT NOT NULL,
+             NumberOfViews BIGINT NULL,
+             NumberOfLikes BIGINT NULL,
+             CreatedDate DATE,
+             CreatedDatetime DATETIME,
+
+             CONSTRAINT uc_video_day UNIQUE (VideoId, CreatedDate)
+        )
+    '''.format(table_name)
+
+    c.execute(videos_lines_create_table_q)
+    conn.commit()
+
+
 insert_into_video_lines_q = '''
     INSERT INTO {0} (
         ChannelID,
@@ -188,3 +195,5 @@ insert_into_video_lines_q = '''
         DATETIME()
     )
 '''
+
+# create_video_lines_table(table_name=lines_table_name)
