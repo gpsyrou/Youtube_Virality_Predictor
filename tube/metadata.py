@@ -294,6 +294,12 @@ class TubeChannelMetaDataRetriever:
 
         return subs
 
+    def get_channel_keywords(self, keywords_map={'name': 'keywords'}) -> str:
+        channel_keywords = self.channel_bsoup.find('meta', attrs=keywords_map)
+        self.channel_keywords = channel_keywords.get('content')
+
+        return self.channel_keywords
+
 
 t = 'https://www.youtube.com/c/MrBeast6000/'
 z = 'https://www.youtube.com/c/EdSheeran/'
@@ -314,3 +320,5 @@ ch.get_channel_name()
 ch2.get_channel_name()
 ch3.get_channel_name()
 ch4.get_channel_name()
+
+ch2.get_channel_keywords()
