@@ -90,5 +90,9 @@ youtube_df_train['tag_list'] = youtube_df_train['tags'].apply(lambda row: extrac
 youtube_df_train['tag_size'] = youtube_df_train['tags'].apply(lambda row: get_tag_size(row))
 
 
-
-
+#####
+data_loc = '/Users/georgiosspyrou/Desktop/GitHub/Projects/Youtube_Likes_Predictor/video_metadata.csv'
+data = pd.read_csv(data_loc)
+data.drop(columns=['Unnamed: 0'], inplace=True)
+data.head(10)
+data[data['video_id'] == 'sPA3XIbho_A']
