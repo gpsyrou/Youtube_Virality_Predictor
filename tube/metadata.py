@@ -11,8 +11,9 @@ import re
 import numpy as np
 from typing import Dict, Any
 from bs4 import element
-from tube.transformer import (transform_pt_format, 
-                              remove_chars, url_to_bs4, 
+from tube.transformer import (transform_pt_format,
+                              remove_chars,
+                              url_to_bs4,
                               subscribers_str_to_int)
 
 
@@ -238,6 +239,17 @@ class TubeChannelMetaDataRetriever:
         self.channel_id = channel_id[0].get('content')
         return self.channel_id
 
+    def get_channel_name(
+        self,
+        channel_name_map={'property': 'og:title'}
+    ) -> str:
+        channel_name = self.channel_bsoup.find_all(
+            'meta',
+            attrs=channel_name_map
+            )
+        self.channel_name = channel_name[0].get('content')
+        return self.channel_name
+
     def is_family_friendly(
             self,
             channel_friendly_map={'itemprop': 'isFamilyFriendly'}
@@ -297,3 +309,8 @@ ch.get_number_of_subscribers()
 ch2.get_number_of_subscribers()
 ch3.get_number_of_subscribers()
 ch4.get_number_of_subscribers()
+
+ch.get_channel_name()
+ch2.get_channel_name()
+ch3.get_channel_name()
+ch4.get_channel_name()
