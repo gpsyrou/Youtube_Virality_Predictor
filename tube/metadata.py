@@ -232,7 +232,7 @@ class VideoMetadataCollector(TubeVideoMetaDataRetriever):
         ids = self.collect_id_metadata()
         descr = self.collect_description_metadata()
 
-        return {**ids, **descr, **dates} 
+        return {**ids, **descr, **dates}
 
 
 class TubeChannelMetaDataRetriever:

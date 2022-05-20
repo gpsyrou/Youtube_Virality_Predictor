@@ -110,7 +110,7 @@ def create_video_header_table(table_name: str):
              CreatedDate DATE,
              CreatedDatetime DATETIME,
 
-             CONSTRAINT uc_header_video_day UNIQUE (VideoId, CreatedDate)
+             CONSTRAINT uc_header_video UNIQUE (VideoId)
         )
     '''.format(table_name)
 

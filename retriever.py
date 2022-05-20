@@ -27,7 +27,11 @@ db_name = params['database_name']
 metadata_table_name = params['meta_table_name']
 
 logger = TubeVideoMultiWritter(video_collection=catalog)
-logger.multivideo_meta_push_to_db()
+
+#logger.multivideo_meta_push_to_db()
+
 logger.meta_push_to_db_header()
 logger.meta_push_to_db_lines()
-logger.write_dataframes_to_csv(filename='video_metadata.csv')
+
+logger.write_dataframes_to_csv(filename='video_header_metadata.csv', kind='header')
+logger.write_dataframes_to_csv(filename='video_lines_metadata.csv', kind='lines')

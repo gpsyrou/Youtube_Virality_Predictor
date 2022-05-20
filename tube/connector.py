@@ -43,8 +43,16 @@ class TubeVideoLogger(VideoMetadataCollector):
         self.data = self.merge_video_meta_info()
         # self.variable_metadata = self.collect_variable_metadata()
 
-    def create_dataframe_for_video(self) -> pd.DataFrame:
-        meta_info_dict = self.merge_video_meta_info()
+    def create_dataframe_for_video(self, kind: str = 'all') -> pd.DataFrame:
+        if kind == 'all':
+            meta_info_dict = self.merge_video_meta_info()
+        elif kind == 'header':
+            meta_info_dict = self.merge_video_constant_metadata()
+        elif kind == 'lines':
+            meta_info_dict = self.merge_video_variable_metadata()
+        else:
+            raise ValueError('The specified type does not exist')
+
         print('Creating metadata df for video_id: \'{0}\''.format(
             self.video_id)
             )
@@ -218,19 +226,23 @@ class TubeVideoMultiWritter():
                 target_tablename=lines_table_name
                 )
 
-    def combine_video_dataframes(self) -> pd.DataFrame:
+    def combine_video_dataframes(self, kind: str = 'all') -> pd.DataFrame:
         all_videos_df = pd.DataFrame()
         for video_url in self.video_url_list:
             video = TubeVideoLogger(video_url=video_url)
-            video_df = video.create_dataframe_for_video()
+            video_df = video.create_dataframe_for_video(kind=kind)
             all_videos_df = all_videos_df.append(video_df)
         return all_videos_df
 
-    def write_dataframes_to_csv(self, filename: str) -> None:
+    def write_dataframes_to_csv(
+        self,
+        filename: str,
+        kind: str = 'all'
+    ) -> None:
         if not os.path.isfile(filename):
             pd.DataFrame().to_csv(filename, index=True)
         df_history = pd.read_csv(filename, index_col=[0])
-        all_videos_df = self.combine_video_dataframes()
+        all_videos_df = self.combine_video_dataframes(kind=kind)
 
         df_history = df_history.append(all_videos_df)
         print('\nUpdating metadata file at: {0}\n'.format(filename))
