@@ -204,6 +204,20 @@ class TubeVideoMultiWritter():
                 target_tablename=metadata_table_name
                 )
 
+    def meta_push_to_db_header(self) -> None:
+        for video_url in self.video_url_list:
+            video = TubeVideoLogger(video_url=video_url)
+            video.insert_into_header_table(
+                target_tablename=header_table_name
+                )
+
+    def meta_push_to_db_lines(self) -> None:
+        for video_url in self.video_url_list:
+            video = TubeVideoLogger(video_url=video_url)
+            video.insert_into_lines_table(
+                target_tablename=lines_table_name
+                )
+
     def combine_video_dataframes(self) -> pd.DataFrame:
         all_videos_df = pd.DataFrame()
         for video_url in self.video_url_list:

@@ -22,7 +22,7 @@ class TubeVideoMetaDataRetriever:
     """
     def __init__(self, video_url: str):
         self.video_url = video_url
-        self.video_bsoup = url_to_bs4(video_url=video_url)
+        self.video_bsoup = url_to_bs4(url=video_url)
 
     def __meta_content_tags__(self) -> element.ResultSet:
         return self.video_bsoup.find_all('meta')
@@ -215,6 +215,24 @@ class VideoMetadataCollector(TubeVideoMetaDataRetriever):
         var = self.collect_variable_metadata()
 
         return {**ids, **descr, **dates, **var}
+
+    def merge_video_variable_metadata(self) -> Dict[str, Any]:
+        channel_id = self.get_channel_id()
+        video_id = self.get_video_id()
+        id_dict = {
+            'channel_id': channel_id,
+            'video_id': video_id
+            }
+        var = self.collect_variable_metadata()
+
+        return {**id_dict, **var}
+
+    def merge_video_constant_metadata(self) -> Dict[str, Any]:
+        dates = self.collect_date_metadata()
+        ids = self.collect_id_metadata()
+        descr = self.collect_description_metadata()
+
+        return {**ids, **descr, **dates} 
 
 
 class TubeChannelMetaDataRetriever:
