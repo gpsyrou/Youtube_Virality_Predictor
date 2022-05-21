@@ -2,5 +2,8 @@
     "database_name": "TubeDB.sqlite",
     "meta_table_name": "TubeMetadata",
     "header_table_name": "TubeMetadataHeader",
-    "lines_table_name": "TubeMetadataLines"
+    "lines_table_name": "TubeMetadataLines",
+
+    "header_csv_filename": "video_header_metadata.csv",
+    "lines_csv_filename": "video_lines_metadata.csv"
 }
