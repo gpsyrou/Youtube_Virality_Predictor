@@ -16,6 +16,7 @@ from database.db import (
     insert_into_video_header_q
     )
 from tube.transformer import get_current_datetime
+from tube.validation import transform_json_urls_to_video_ids
 
 CONFIGS_PATH = os.path.join(os.getcwd(), 'config')
 
@@ -35,6 +36,8 @@ db_name = params['database_name']
 metadata_table_name = params['meta_table_name']
 header_table_name = params['header_table_name']
 lines_table_name = params['lines_table_name']
+
+catalog = transform_json_urls_to_video_ids(catalog)
 
 
 class TubeVideoLogger(VideoMetadataCollector):
