@@ -13,7 +13,8 @@ from tube.metadata import VideoMetadataCollector
 from database.db import (
     insert_into_q,
     insert_into_video_lines_q,
-    insert_into_video_header_q
+    insert_into_video_header_q,
+    get_distinct_video_ids_from_db_table
     )
 from tube.transformer import get_current_datetime
 from tube.validation import transform_json_urls_to_video_ids
@@ -38,6 +39,10 @@ header_table_name = params['header_table_name']
 lines_table_name = params['lines_table_name']
 
 catalog = transform_json_urls_to_video_ids(catalog)
+
+video_ids_exist_in_header_ls = get_distinct_video_ids_from_db_table(
+    table_name=header_table_name
+    )
 
 
 class TubeVideoLogger(VideoMetadataCollector):
@@ -218,9 +223,11 @@ class TubeVideoMultiWritter():
     def meta_push_to_db_header(self) -> None:
         for video_url in self.video_url_list:
             video = TubeVideoLogger(video_url=video_url)
-            video.insert_into_header_table(
-                target_tablename=header_table_name
-                )
+            video_id = video.get_video_id()
+            if video_id not in video_ids_exist_in_header_ls:
+                video.insert_into_header_table(
+                    target_tablename=header_table_name
+                    )
 
     def meta_push_to_db_lines(self) -> None:
         for video_url in self.video_url_list:
