@@ -18,6 +18,7 @@ from database.db import (
     )
 from tube.transformer import get_current_datetime
 from tube.validation import transform_json_urls_to_video_ids
+from pandas.errors import EmptyDataError
 
 CONFIGS_PATH = os.path.join(os.getcwd(), 'config')
 
@@ -251,9 +252,12 @@ class TubeVideoMultiWritter():
     ) -> None:
         if not os.path.isfile(filename):
             pd.DataFrame().to_csv(filename, index=True)
-        df_history = pd.read_csv(filename, index_col=[0])
         all_videos_df = self.combine_video_dataframes(kind=kind)
-
-        df_history = df_history.append(all_videos_df)
-        print('\nUpdating metadata file at: {0}\n'.format(filename))
-        df_history.to_csv(filename, index=True)
+        try:
+            df_history = pd.read_csv(filename, index_col=[0])
+            df_history = df_history.append(all_videos_df)
+            print('\nUpdating metadata file at: {0}\n'.format(filename))
+            df_history.to_csv(filename, index=True)
+        except EmptyDataError:
+            print('\nUpdating metadata file at: {0}\n'.format(filename))
+            all_videos_df.to_csv(filename, index=True)    
