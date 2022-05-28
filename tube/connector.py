@@ -41,9 +41,12 @@ lines_table_name = params['lines_table_name']
 
 catalog = transform_json_urls_to_video_ids(catalog)
 
-video_ids_exist_in_header_ls = get_distinct_video_ids_from_db_table(
-    table_name=header_table_name
-    )
+try:
+    video_ids_exist_in_header_ls = get_distinct_video_ids_from_db_table(
+        table_name=header_table_name
+        )
+except sqlite3.OperationalError:
+    video_ids_exist_in_header_ls = []
 
 
 class TubeVideoLogger(VideoMetadataCollector):
