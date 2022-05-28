@@ -263,4 +263,4 @@ class TubeVideoMultiWritter():
             df_history.to_csv(filename, index=True)
         except EmptyDataError:
             print('\nUpdating metadata file at: {0}\n'.format(filename))
-            all_videos_df.to_csv(filename, index=True)    
+            all_videos_df.to_csv(filename, index=True)
