@@ -7,38 +7,22 @@ upload date and more.
 """
 
 
-import urllib.request
 import re
 import numpy as np
 from typing import Dict, Any
-from bs4 import BeautifulSoup, element
-from tube.transformer import transform_pt_format, remove_chars
+from bs4 import element
+from tube.transformer import (transform_pt_format,
+                              remove_chars,
+                              url_to_bs4,
+                              subscribers_str_to_int)
 
 
-class YoutubeMetaDataRetriever:
+class TubeVideoMetaDataRetriever:
     """ Class to retrieve and analyzer information of Youtube videos.
     """
     def __init__(self, video_url: str):
         self.video_url = video_url
-        self.video_bsoup = self.url_to_bs4(video_url=video_url)
-
-    def url_to_bs4(self, video_url: str) -> BeautifulSoup:
-        """
-        Given a website link (URL), retrieve the corresponding website in an
-        html format.
-        Parameters
-        ----------
-        video_url : str
-            URL of the webpage that will be transformed to a BeautifulSoup obj.
-        """
-        # print('Attempting to retrieve HTML object for {0}'.format(video_url))
-        request = urllib.request.urlopen(video_url)
-        if request.getcode() != 200:
-            raise Exception('Can not communicate with the client')
-        else:
-            response = request.read()
-            response_html = BeautifulSoup(response, 'html.parser')
-            return response_html
+        self.video_bsoup = url_to_bs4(url=video_url)
 
     def __meta_content_tags__(self) -> element.ResultSet:
         return self.video_bsoup.find_all('meta')
@@ -147,9 +131,9 @@ class YoutubeMetaDataRetriever:
         return self.number_of_likes
 
 
-class MetadataCollector(YoutubeMetaDataRetriever):
+class VideoMetadataCollector(TubeVideoMetaDataRetriever):
     def __init__(self, video_url: str):
-        YoutubeMetaDataRetriever.__init__(self, video_url=video_url)
+        TubeVideoMetaDataRetriever.__init__(self, video_url=video_url)
 
     def collect_variable_metadata(self) -> Dict[str, int]:
         """ Returns a collection of video information that is variable in time.
@@ -231,3 +215,128 @@ class MetadataCollector(YoutubeMetaDataRetriever):
         var = self.collect_variable_metadata()
 
         return {**ids, **descr, **dates, **var}
+
+    def merge_video_variable_metadata(self) -> Dict[str, Any]:
+        channel_id = self.get_channel_id()
+        video_id = self.get_video_id()
+        id_dict = {
+            'channel_id': channel_id,
+            'video_id': video_id
+            }
+        var = self.collect_variable_metadata()
+
+        return {**id_dict, **var}
+
+    def merge_video_constant_metadata(self) -> Dict[str, Any]:
+        dates = self.collect_date_metadata()
+        ids = self.collect_id_metadata()
+        descr = self.collect_description_metadata()
+
+        return {**ids, **descr, **dates}
+
+
+class TubeChannelMetaDataRetriever:
+    """ Class to retrieve and analyzer information of Youtube channels.
+    """
+    def __init__(self, channel_url: str):
+        self.channel_url = channel_url
+        self.channel_bsoup = url_to_bs4(url=channel_url)
+        self.channel_id = self.get_channel_id()
+
+    def __meta_content_tags__(self) -> element.ResultSet:
+        return self.channel_bsoup.find_all('meta')
+
+    def __div_content_tags__(self) -> element.ResultSet:
+        return self.channel_bsoup.find_all('div')
+
+    def get_channel_id(self, channel_id_map={'itemprop': 'channelId'}) -> str:
+        channel_id = self.channel_bsoup.find_all(
+            'meta',
+            attrs=channel_id_map
+            )
+        self.channel_id = channel_id[0].get('content')
+        return self.channel_id
+
+    def get_channel_name(
+        self,
+        channel_name_map={'property': 'og:title'}
+    ) -> str:
+        channel_name = self.channel_bsoup.find_all(
+            'meta',
+            attrs=channel_name_map
+            )
+        self.channel_name = channel_name[0].get('content')
+        return self.channel_name
+
+    def is_family_friendly(
+            self,
+            channel_friendly_map={'itemprop': 'isFamilyFriendly'}
+    ) -> bool:
+        friendly = self.channel_bsoup.find('meta', attrs=channel_friendly_map)
+        friendly = friendly.get('content')
+        if friendly == 'true':
+            self.friendly = True
+        else:
+            self.friendly = False
+        return self.friendly
+
+    def get_channel_description(
+            self,
+            descr_map={'itemprop': 'description'}
+    ) -> str:
+        description = self.channel_bsoup.find('meta', attrs=descr_map)
+        description = description.get('content')
+        self.description = remove_chars(description)
+        return self.description
+
+    def is_paid_membership(
+            self,
+            membership_map={'itemprop': 'paid'}
+    ) -> bool:
+        membership = self.channel_bsoup.find('meta', attrs=membership_map)
+        self.membership = membership.get('content')
+        if membership == 'true':
+            self.membership = True
+        else:
+            self.membership = False
+        return self.membership
+
+    def get_number_of_subscribers(self) -> str:
+        s = re.findall(
+            pattern=r'"subscriberCountText".+?subscribers',
+            string=str(self.channel_bsoup)
+            )
+        subs = s[-1].split('"')[-1]
+        subs = subs.replace('subscribers', '').strip()
+        subs = int(subscribers_str_to_int(subs))
+
+        return subs
+
+    def get_channel_keywords(self, keywords_map={'name': 'keywords'}) -> str:
+        channel_keywords = self.channel_bsoup.find('meta', attrs=keywords_map)
+        self.channel_keywords = channel_keywords.get('content')
+
+        return self.channel_keywords
+
+
+t = 'https://www.youtube.com/c/MrBeast6000/'
+z = 'https://www.youtube.com/c/EdSheeran/'
+f = 'https://www.youtube.com/c/NianLi%C3%86/'
+d = 'https://www.youtube.com/channel/UCj_ctckPEilz67WE2-kzYig'
+
+ch = TubeChannelMetaDataRetriever(channel_url=t)
+ch2 = TubeChannelMetaDataRetriever(channel_url=z)
+ch3 = TubeChannelMetaDataRetriever(channel_url=f)
+ch4 = TubeChannelMetaDataRetriever(channel_url=d)
+
+ch.get_number_of_subscribers()
+ch2.get_number_of_subscribers()
+ch3.get_number_of_subscribers()
+ch4.get_number_of_subscribers()
+
+ch.get_channel_name()
+ch2.get_channel_name()
+ch3.get_channel_name()
+ch4.get_channel_name()
+
+ch2.get_channel_keywords()

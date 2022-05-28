@@ -8,6 +8,8 @@ transformation operations.
 
 import datetime
 from typing import List
+from bs4 import BeautifulSoup
+import urllib.request
 
 global chars
 chars = ['"', '\'']
@@ -57,3 +59,35 @@ def remove_chars(s: str, chars: List[str] = chars) -> str:
         if char in s:
             s = s.replace(char, '')
     return s
+
+
+def url_to_bs4(url: str) -> BeautifulSoup:
+    """
+    Given a website link (URL), retrieve the corresponding website in an
+    html format.
+    Parameters
+    ----------
+    video_url : str
+        URL of the webpage that will be transformed to a BeautifulSoup obj.
+    """
+    # print('Attempting to retrieve HTML object for {0}'.format(video_url))
+    request = urllib.request.urlopen(url)
+    if request.getcode() != 200:
+        raise Exception('Can not communicate with the client')
+    else:
+        response = request.read()
+        response_html = BeautifulSoup(response, 'html.parser')
+        return response_html
+
+
+def subscribers_str_to_int(s: str) -> int:
+    """ Transforms a string indicating the number of channel substribers
+    into a integer format.
+    """
+    s = s.lower()
+    if 'million' in s:
+        return float(s.split(' ')[0]) * 1000000
+    elif 'k' in s:
+        return float(s.split('k')[0]) * 1000
+    else:
+        return float(s)

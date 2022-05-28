@@ -7,7 +7,8 @@ transformations to prepare the data for further analysis.
 
 import os
 import json
-from tube.connector import TubeMultiWritter
+from tube.connector import TubeVideoMultiWritter
+from tube.validation import is_header_synced_with_catalog
 
 CONFIGS_PATH = os.path.join(os.getcwd(), 'config')
 
@@ -25,8 +26,34 @@ with open(params_path) as params_json:
 
 db_name = params['database_name']
 metadata_table_name = params['meta_table_name']
+header_f = params['header_csv_filename']
+lines_f = params['lines_csv_filename']
 
-logger = TubeMultiWritter(video_collection=catalog)
+logger = TubeVideoMultiWritter(video_collection=catalog)
 
-logger.multivideo_meta_push_to_db()
-logger.write_dataframes_to_csv(filename='video_metadata.csv')
+# Check all videos in lines and header match
+data_synced = is_header_synced_with_catalog(header_f=header_f, catalog=catalog)
+
+if data_synced:
+    # DB push
+    logger.meta_push_to_db_lines()
+
+    logger.write_dataframes_to_csv(
+        filename=lines_f,
+        kind='lines'
+        )
+else:
+    # DB push
+    logger.meta_push_to_db_header()
+    logger.meta_push_to_db_lines()
+
+    # Flat files push
+    logger.write_dataframes_to_csv(
+        filename=header_f,
+        kind='header'
+        )
+
+    logger.write_dataframes_to_csv(
+        filename=lines_f,
+        kind='lines'
+        )
