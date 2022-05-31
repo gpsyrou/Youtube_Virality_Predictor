@@ -9,16 +9,17 @@ import os
 import pandas as pd
 import json
 import sqlite3
-from tube.metadata import VideoMetadataCollector
-from database.db import (
-    insert_into_q,
-    insert_into_video_lines_q,
-    insert_into_video_header_q,
-    get_distinct_video_ids_from_db_table
-    )
+from tube.metadata import ChannelMetadataCollector, VideoMetadataCollector
 from tube.transformer import get_current_datetime
 from tube.validation import transform_json_urls_to_video_ids
+from database.schema import (
+    insert_into_q,
+    insert_into_video_lines_q,
+    insert_into_video_header_q
+    )
+from database.db import get_distinct_video_ids_from_db_table
 from pandas.errors import EmptyDataError
+
 
 CONFIGS_PATH = os.path.join(os.getcwd(), 'config')
 
@@ -264,3 +265,9 @@ class TubeVideoMultiWritter():
         except EmptyDataError:
             print('\nUpdating metadata file at: {0}\n'.format(filename))
             all_videos_df.to_csv(filename, index=True)
+
+
+class TubeChannelLogger(ChannelMetadataCollector):
+    def __init__(self, channelo_url: str):
+        ChannelMetadataCollector.__init__(self, channelo_url=channelo_url)
+        self.channel_data = self.collect_channel_metadata()
