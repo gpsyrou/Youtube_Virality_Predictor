@@ -223,6 +223,7 @@ class TubeVideoMultiWritter():
             video.insert_into_metadata_table(
                 target_tablename=metadata_table_name
                 )
+        print('Finished pushing to DB...')
 
     def meta_push_to_db_header(self) -> None:
         for video_url in self.video_url_list:
@@ -232,6 +233,7 @@ class TubeVideoMultiWritter():
                 video.insert_into_header_table(
                     target_tablename=header_table_name
                     )
+        print('Finished pushing to DB for Header Table...')
 
     def meta_push_to_db_lines(self) -> None:
         for video_url in self.video_url_list:
@@ -239,6 +241,7 @@ class TubeVideoMultiWritter():
             video.insert_into_lines_table(
                 target_tablename=lines_table_name
                 )
+        print('Finished pushing to DB for Lines Table...')
 
     def combine_video_dataframes(self, kind: str = 'all') -> pd.DataFrame:
         all_videos_df = pd.DataFrame()
