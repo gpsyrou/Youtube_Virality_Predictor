@@ -7,13 +7,14 @@ transformations to prepare the data for further analysis.
 
 import os
 import json
-from tube.connector import TubeVideoMultiWritter
+from tube.connector import TubeVideoMultiWritter, TubeChannelMultiWritter
 from tube.validation import is_header_synced_with_catalog
 
 CONFIGS_PATH = os.path.join(os.getcwd(), 'config')
 
 catalog_path = os.path.join(CONFIGS_PATH, 'video_catalog.json')
 params_path = os.path.join(CONFIGS_PATH, 'param.json')
+channels_path = os.path.join(CONFIGS_PATH, 'channel_catalog.json')
 
 
 with open(catalog_path) as video_catalog_json:
@@ -24,12 +25,17 @@ with open(params_path) as params_json:
     params = json.load(params_json)
     params_json.close()
 
+with open(channels_path) as channels_json:
+    channels_catalog = json.load(channels_json)
+    channels_json.close()
+
 db_name = params['database_name']
 metadata_table_name = params['meta_table_name']
 header_f = params['header_csv_filename']
 lines_f = params['lines_csv_filename']
 
 logger = TubeVideoMultiWritter(video_collection=catalog)
+channel_logger = TubeChannelMultiWritter(channel_collection=channels_catalog)
 
 # Check all videos in lines and header match
 data_synced = is_header_synced_with_catalog(header_f=header_f, catalog=catalog)

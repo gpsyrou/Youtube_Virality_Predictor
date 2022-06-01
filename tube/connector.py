@@ -25,7 +25,7 @@ CONFIGS_PATH = os.path.join(os.getcwd(), 'config')
 
 catalog_path = os.path.join(CONFIGS_PATH, 'video_catalog.json')
 params_path = os.path.join(CONFIGS_PATH, 'param.json')
-
+channels_path = os.path.join(CONFIGS_PATH, 'channel_catalog.json')
 
 with open(catalog_path) as video_catalog_json:
     catalog = json.load(video_catalog_json)
@@ -34,6 +34,10 @@ with open(catalog_path) as video_catalog_json:
 with open(params_path) as params_json:
     params = json.load(params_json)
     params_json.close()
+
+with open(channels_path) as channels_json:
+    channels_catalog = json.load(channels_json)
+    channels_json.close()
 
 db_name = params['database_name']
 metadata_table_name = params['meta_table_name']
@@ -271,3 +275,16 @@ class TubeChannelLogger(ChannelMetadataCollector):
     def __init__(self, channelo_url: str):
         ChannelMetadataCollector.__init__(self, channelo_url=channelo_url)
         self.channel_data = self.collect_channel_metadata()
+
+
+class TubeChannelMultiWritter():
+    def __init__(self, channel_collection: dict):
+        self.channel_collection = channel_collection
+        self.channel_url_list = self.generate_channel_list()
+
+    def generate_channel_list(self):
+        channel_url_list = []
+        for channel in self.channel_collection['channels']:
+            if channel.get('run'):
+                channel_url_list.append(channel.get('url'))
+        return channel_url_list

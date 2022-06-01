@@ -1,0 +1,15 @@
+{
+    "channels": [
+        
+        {
+            "id": 1,
+            "url": "https://www.youtube.com/channel/UC0WP5P-ufpRfjbNrmOWwLBQ",
+            "run": true
+        },
+        {
+            "id": 2,
+            "url": "https://www.youtube.com/c/britainsgottalent",
+            "run": true
+        }
+    ]
+}
