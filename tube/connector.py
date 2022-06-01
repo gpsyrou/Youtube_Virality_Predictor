@@ -272,9 +272,21 @@ class TubeVideoMultiWritter():
 
 
 class TubeChannelLogger(ChannelMetadataCollector):
-    def __init__(self, channelo_url: str):
-        ChannelMetadataCollector.__init__(self, channelo_url=channelo_url)
+    def __init__(self, channel_url: str):
+        ChannelMetadataCollector.__init__(self, channel_url=channel_url)
         self.channel_data = self.collect_channel_metadata()
+
+    def create_dataframe_for_channel(self) -> pd.DataFrame:
+        print('Creating metadata df for channel_id: \'{0}\''.format(
+            self.channel_id)
+            )
+        df = pd.DataFrame.from_records([self.channel_data])
+
+        curr_time = get_current_datetime()
+        df['CreatedDate'] = curr_time.split(' ')[0]
+        df['CreatedDatetime'] = curr_time
+
+        return df
 
 
 class TubeChannelMultiWritter():
@@ -288,3 +300,27 @@ class TubeChannelMultiWritter():
             if channel.get('run'):
                 channel_url_list.append(channel.get('url'))
         return channel_url_list
+
+    def combine_channel_dataframes(self, kind: str = 'all') -> pd.DataFrame:
+        all_channels_df = pd.DataFrame()
+        for channel_url in self.channel_url_list:
+            channel = TubeChannelLogger(channel_url=channel_url)
+            channel_df = channel.create_dataframe_for_channel()
+            all_channels_df = all_channels_df.append(channel_df)
+        return all_channels_df
+
+    def write_channel_dataframes_to_csv(
+        self,
+        filename: str
+    ) -> None:
+        if not os.path.isfile(filename):
+            pd.DataFrame().to_csv(filename, index=True)
+        all_channels_df = self.combine_channel_dataframes()
+        try:
+            df_channel_history = pd.read_csv(filename, index_col=[0])
+            df_channel_history = df_channel_history.append(all_channels_df)
+            print('\nUpdating metadata file at: {0}\n'.format(filename))
+            df_channel_history.to_csv(filename, index=True)
+        except EmptyDataError:
+            print('\nUpdating metadata file at: {0}\n'.format(filename))
+            all_channels_df.to_csv(filename, index=True)

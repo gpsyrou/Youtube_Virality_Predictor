@@ -33,9 +33,12 @@ db_name = params['database_name']
 metadata_table_name = params['meta_table_name']
 header_f = params['header_csv_filename']
 lines_f = params['lines_csv_filename']
+channel_f = params['channels_csv_filename']
 
 logger = TubeVideoMultiWritter(video_collection=catalog)
 channel_logger = TubeChannelMultiWritter(channel_collection=channels_catalog)
+
+# Update Videos
 
 # Check all videos in lines and header match
 data_synced = is_header_synced_with_catalog(header_f=header_f, catalog=catalog)
@@ -63,3 +66,6 @@ else:
         filename=lines_f,
         kind='lines'
         )
+
+# Update Channels
+channel_logger.write_channel_dataframes_to_csv(filename=channel_f)
