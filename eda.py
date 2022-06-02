@@ -81,24 +81,5 @@ plot_change_in_views_and_likes(
     video_id='sPA3XIbho_A', 
     views_col='number_of_views', 
     likes_col='number_of_likes', 
-    date_col='CreatedDate'
-    ) # Need to normalize
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    date_col='CreatedDate_lines'
+    ) 
