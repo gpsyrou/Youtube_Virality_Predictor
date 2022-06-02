@@ -1,5 +1,6 @@
 """ Collection of function used to apply transformations on columns/features
 """
+import pandas as pd
 from typing import List
 
 
@@ -32,3 +33,7 @@ def get_tag_size(s: str, sep: str = '|') -> int:
         return 0
     else:
         return len(s)
+
+
+def get_title_from_video_id(input_df: pd.DataFrame, video_id: str) -> str:
+    return input_df[input_df['video_id']==video_id]['title'].unique()[0]

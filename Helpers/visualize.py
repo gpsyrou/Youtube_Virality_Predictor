@@ -5,6 +5,7 @@ import pandas as pd
 import seaborn as sns
 sns.set_style("dark")
 
+from features.feature_preprocess import get_title_from_video_id
 
 def plot_date_change_for_col(
     input_df: pd.DataFrame, 
@@ -18,11 +19,14 @@ def plot_date_change_for_col(
     plt.figure(figsize=(10, 10))
     cols = [date_col, col]
     video_df = input_df[input_df['video_id'] == video_id][cols]
+    title = get_title_from_video_id(input_df=input_df, video_id=video_id)
     sns.lineplot(data=video_df, x=date_col, y=col)
     plt.xticks(rotation=40)
     plt.title(
-        'Change of \'{0}\' per day for VideoId: \'{1}\''.format(col, video_id)
-    )
+        'Change of \'{0}\' per day for VideoId: \'{1}\' \n {2}'.format(
+            col, video_id, title
+            ),
+    fontweight='bold')
     plt.grid(True, alpha=0.3, c='black')
     plt.show()
 
@@ -102,3 +106,7 @@ def visualize_categorical_feature(input_df: pd.DataFrame,
     plt.grid(True, alpha=0.2, color='black')
     plt.title(f'Number of observations per \'{col_name}\'', fontweight='bold')
     plt.show()
+
+
+
+
