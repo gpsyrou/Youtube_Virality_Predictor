@@ -11,7 +11,10 @@ import json
 import sqlite3
 from tube.metadata import ChannelMetadataCollector, VideoMetadataCollector
 from tube.transformer import get_current_datetime
-from tube.validation import transform_json_urls_to_video_ids
+from tube.validation import (
+    transform_json_urls_to_video_ids,
+    retrieve_list_of_existing_channels
+    )
 from database.schema import (
     insert_into_q,
     insert_into_video_lines_q,
@@ -43,6 +46,7 @@ db_name = params['database_name']
 metadata_table_name = params['meta_table_name']
 header_table_name = params['header_table_name']
 lines_table_name = params['lines_table_name']
+channel_f = params['channels_csv_filename']
 
 catalog = transform_json_urls_to_video_ids(catalog)
 
@@ -301,12 +305,24 @@ class TubeChannelMultiWritter():
                 channel_url_list.append(channel.get('url'))
         return channel_url_list
 
-    def combine_channel_dataframes(self, kind: str = 'all') -> pd.DataFrame:
+    def combine_channel_dataframes(self) -> pd.DataFrame:
         all_channels_df = pd.DataFrame()
+        ex_channel_ids, ex_channel_names = retrieve_list_of_existing_channels(
+            filename=channel_f
+            )
         for channel_url in self.channel_url_list:
             channel = TubeChannelLogger(channel_url=channel_url)
-            channel_df = channel.create_dataframe_for_channel()
-            all_channels_df = all_channels_df.append(channel_df)
+            id_not_exists = channel.channel_id not in ex_channel_ids
+            name_not_exists = channel.channel_name not in ex_channel_names
+            if id_not_exists and name_not_exists:
+                channel_df = channel.create_dataframe_for_channel()
+                all_channels_df = all_channels_df.append(channel_df)
+            else:
+                print(
+                    "\nChannel: {0} already exists. Skipping...\n".format(
+                        channel.channel_id)
+                    )
+                continue
         return all_channels_df
 
     def write_channel_dataframes_to_csv(

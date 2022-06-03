@@ -10,6 +10,7 @@ import json
 from tube.connector import TubeVideoMultiWritter, TubeChannelMultiWritter
 from tube.validation import is_header_synced_with_catalog
 
+
 CONFIGS_PATH = os.path.join(os.getcwd(), 'config')
 
 catalog_path = os.path.join(CONFIGS_PATH, 'video_catalog.json')
@@ -35,7 +36,7 @@ header_f = params['header_csv_filename']
 lines_f = params['lines_csv_filename']
 channel_f = params['channels_csv_filename']
 
-logger = TubeVideoMultiWritter(video_collection=catalog)
+videos_logger = TubeVideoMultiWritter(video_collection=catalog)
 channel_logger = TubeChannelMultiWritter(channel_collection=channels_catalog)
 
 # Update Videos
@@ -45,24 +46,24 @@ data_synced = is_header_synced_with_catalog(header_f=header_f, catalog=catalog)
 
 if data_synced:
     # DB push
-    logger.meta_push_to_db_lines()
+    videos_logger.meta_push_to_db_lines()
 
-    logger.write_dataframes_to_csv(
+    videos_logger.write_dataframes_to_csv(
         filename=lines_f,
         kind='lines'
         )
 else:
     # DB push
-    logger.meta_push_to_db_header()
-    logger.meta_push_to_db_lines()
+    videos_logger.meta_push_to_db_header()
+    videos_logger.meta_push_to_db_lines()
 
     # Flat files push
-    logger.write_dataframes_to_csv(
+    videos_logger.write_dataframes_to_csv(
         filename=header_f,
         kind='header'
         )
 
-    logger.write_dataframes_to_csv(
+    videos_logger.write_dataframes_to_csv(
         filename=lines_f,
         kind='lines'
         )
