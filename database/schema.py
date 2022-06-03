@@ -1,10 +1,10 @@
 import sqlite3
-from typing import List
 
 db_name = 'TubeDB.sqlite'
 metadata_table_name = 'TubeMetadata'
 header_table_name = 'TubeMetadataHeader'
 lines_table_name = 'TubeMetadataLines'
+channels_table_name = 'TubeChannels'
 
 conn = sqlite3.connect(db_name)
 c = conn.cursor()
@@ -249,5 +249,3 @@ insert_into_channel_q = '''
         DATETIME()
     )
 '''
-
-
