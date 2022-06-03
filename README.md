@@ -38,5 +38,5 @@ graph   LR
 ### Entity-Relatioship Diagram
 
 <p align="center">
-  <img src="/img/ERD_youtube.png" width="350" title="hover text">
+  <img src="/img/ERD_youtube.png" width="720" title="hover text">
 </p>
