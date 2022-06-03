@@ -1,3 +1,9 @@
+"""
+Author: Georgios Spyrou (georgios.spyrou1@gmail.com")
+
+Purpose: Module to perform validation and automatic quality assurance checks
+during population/retrieval of the data from YouTube.
+"""
 import os
 import json
 import pandas as pd
@@ -24,13 +30,13 @@ header_f = params['header_csv_filename']
 lines_f = params['lines_csv_filename']
 
 
-def get_video_id_from_url(url: str) -> str:
+def get_id_from_url(url: str) -> str:
     return url.split('/')[-1]
 
 
 def transform_json_urls_to_video_ids(catalog: dict) -> List[str]:
     urls_ls = [x['url'] for x in catalog['videos']]
-    urls_ls = list(set(map(get_video_id_from_url, urls_ls)))
+    urls_ls = list(set(map(get_id_from_url, urls_ls)))
     return urls_ls
 
 
@@ -38,6 +44,16 @@ def retrieve_list_of_videos(filename: str, col: str = 'video_id') -> List[str]:
     data = pd.read_csv(filename, usecols=[col])
     vals = list(set(data[col]))
     return vals
+
+
+def retrieve_list_of_existing_channels(
+    filename: str,
+    cols: str = ['channel_id', 'channel_name']
+) -> tuple:
+    data = pd.read_csv(filename, usecols=cols)
+    vals_ids = list(set(data[cols[0]]))
+    vals_names = list(set(data[cols[1]]))
+    return (vals_ids, vals_names)
 
 
 def is_header_lines_coverage_complete(

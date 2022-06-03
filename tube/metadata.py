@@ -319,6 +319,34 @@ class TubeChannelMetaDataRetriever:
         return self.channel_keywords
 
 
+class ChannelMetadataCollector(TubeChannelMetaDataRetriever):
+    def __init__(self, channel_url: str):
+        TubeChannelMetaDataRetriever.__init__(self, channel_url=channel_url)
+
+    def collect_channel_metadata(self) -> Dict[str, int]:
+        """ Returns the metadata information for a YouTube channel
+        """
+        channel_id = self.get_channel_id()
+        channel_name = self.get_channel_name()
+        channel_description = self.get_channel_description()
+        is_family_friendly = self.is_family_friendly()
+        is_paid_membership = self.is_paid_membership()
+        channel_keywords = self.get_channel_keywords()
+        channel_num_subscribers = self.get_number_of_subscribers()
+
+        channel_meta_dict = {
+            'channel_id': channel_id,
+            'channel_name': channel_name,
+            'channel_description': channel_description,
+            'is_family_friendly': is_family_friendly,
+            'is_paid_membership': is_paid_membership,
+            'channel_keywords': channel_keywords,
+            'channel_num_subscribers': channel_num_subscribers
+            }
+
+        return channel_meta_dict
+
+
 t = 'https://www.youtube.com/c/MrBeast6000/'
 z = 'https://www.youtube.com/c/EdSheeran/'
 f = 'https://www.youtube.com/c/NianLi%C3%86/'
@@ -339,4 +367,7 @@ ch2.get_channel_name()
 ch3.get_channel_name()
 ch4.get_channel_name()
 
-ch2.get_channel_keywords()
+ch.get_channel_keywords()
+
+vv = ChannelMetadataCollector(channel_url=t)
+vv.collect_channel_metadata()

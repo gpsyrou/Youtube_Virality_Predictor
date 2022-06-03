@@ -1,0 +1,141 @@
+{
+    "channels": [
+        
+        {
+            "id": 1,
+            "url": "https://www.youtube.com/channel/UC0WP5P-ufpRfjbNrmOWwLBQ",
+            "run": true
+        },
+        {
+            "id": 2,
+            "url": "https://www.youtube.com/c/britainsgottalent",
+            "run": true
+        },
+        {
+            "id": 3,
+            "url": "https://www.youtube.com/channel/UCy3zgWom-5AGypGX_FVTKpg",
+            "run": true
+        },
+        {
+            "id": 4,
+            "url": "https://www.youtube.com/c/FieldDays",
+            "run": true
+        },
+        {
+            "id": 5,
+            "url": "https://www.youtube.com/c/TED",
+            "run": true
+        },
+        {
+            "id": 6,
+            "url": "https://www.youtube.com/c/trboxing",
+            "run": true
+        },
+        {
+            "id": 7,
+            "url": "https://www.youtube.com/c/SafiyaNygaard",
+            "run": true
+        },
+        {
+            "id": 8,
+            "url": "https://www.youtube.com/c/MattDoesTech",
+            "run": true
+        },
+        {
+            "id": 9,
+            "url": "https://www.youtube.com/c/inflightVideo",
+            "run": true
+        },
+        {
+            "id": 10,
+            "url": "https://www.youtube.com/channel/UC0C-w0YjGpqDXGB8IHb662A",
+            "run": true
+        },
+        {
+            "id": 11,
+            "url": "https://www.youtube.com/c/marvel",
+            "run": true
+        },
+        {
+            "id": 12,
+            "url": "https://www.youtube.com/c/strangerthings",
+            "run": true
+        },
+        {
+            "id": 13,
+            "url": "https://www.youtube.com/c/CoolWorldsLab",
+            "run": true
+        },
+        {
+            "id": 14,
+            "url": "https://www.youtube.com/c/livenowfox",
+            "run": true
+        },
+        {
+            "id": 15,
+            "url": "https://www.youtube.com/channel/UCZFWPqqPkFlNwIxcpsLOwew",
+            "run": true
+        },
+        {
+            "id": 16,
+            "url": "https://www.youtube.com/channel/UCsRM0YB_dabtEPGPTKo-gcw",
+            "run": true
+        },
+        {
+            "id": 17,
+            "url": "https://www.youtube.com/channel/UCeLHszkByNZtPKcaVXOCOQQ",
+            "run": true
+        },
+        {
+            "id": 18,
+            "url": "https://www.youtube.com/c/AshtonGleckman",
+            "run": true
+        },
+        {
+            "id": 19,
+            "url": "https://www.youtube.com/c/halfasinteresting",
+            "run": true
+        },
+        {
+            "id": 20,
+            "url": "https://www.youtube.com/c/blackpenredpen",
+            "run": true
+        },
+        {
+            "id": 21,
+            "url": "https://www.youtube.com/c/AlexTheAnalyst",
+            "run": true
+        },
+        {
+            "id": 22,
+            "url": "https://www.youtube.com/c/Channel4News",
+            "run": true
+        },
+        {
+            "id": 23,
+            "url": "https://www.youtube.com/c/SkyNews",
+            "run": true
+        },
+        {
+            "id": 24,
+            "url": "https://www.youtube.com/user/CNN",
+            "run": true
+        },
+        {
+            "id": 25,
+            "url": "https://www.youtube.com/c/Grmdaily",
+            "run": true
+        },
+        {
+            "id": 26,
+            "url": "https://www.youtube.com/c/sentdex",
+            "run": true
+        },
+        {
+            "id": 27,
+            "url": "https://www.youtube.com/c/EurovisionSongContest",
+            "run": true
+        }
+
+    ]
+}

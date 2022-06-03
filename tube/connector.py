@@ -9,22 +9,26 @@ import os
 import pandas as pd
 import json
 import sqlite3
-from tube.metadata import VideoMetadataCollector
-from database.db import (
+from tube.metadata import ChannelMetadataCollector, VideoMetadataCollector
+from tube.transformer import get_current_datetime
+from tube.validation import (
+    transform_json_urls_to_video_ids,
+    retrieve_list_of_existing_channels
+    )
+from database.schema import (
     insert_into_q,
     insert_into_video_lines_q,
-    insert_into_video_header_q,
-    get_distinct_video_ids_from_db_table
+    insert_into_video_header_q
     )
-from tube.transformer import get_current_datetime
-from tube.validation import transform_json_urls_to_video_ids
+from database.db import get_distinct_video_ids_from_db_table
 from pandas.errors import EmptyDataError
+
 
 CONFIGS_PATH = os.path.join(os.getcwd(), 'config')
 
 catalog_path = os.path.join(CONFIGS_PATH, 'video_catalog.json')
 params_path = os.path.join(CONFIGS_PATH, 'param.json')
-
+channels_path = os.path.join(CONFIGS_PATH, 'channel_catalog.json')
 
 with open(catalog_path) as video_catalog_json:
     catalog = json.load(video_catalog_json)
@@ -34,10 +38,15 @@ with open(params_path) as params_json:
     params = json.load(params_json)
     params_json.close()
 
+with open(channels_path) as channels_json:
+    channels_catalog = json.load(channels_json)
+    channels_json.close()
+
 db_name = params['database_name']
 metadata_table_name = params['meta_table_name']
 header_table_name = params['header_table_name']
 lines_table_name = params['lines_table_name']
+channel_f = params['channels_csv_filename']
 
 catalog = transform_json_urls_to_video_ids(catalog)
 
@@ -267,3 +276,70 @@ class TubeVideoMultiWritter():
         except EmptyDataError:
             print('\nUpdating metadata file at: {0}\n'.format(filename))
             all_videos_df.to_csv(filename, index=True)
+
+
+class TubeChannelLogger(ChannelMetadataCollector):
+    def __init__(self, channel_url: str):
+        ChannelMetadataCollector.__init__(self, channel_url=channel_url)
+        self.channel_data = self.collect_channel_metadata()
+
+    def create_dataframe_for_channel(self) -> pd.DataFrame:
+        print('Creating metadata df for channel_id: \'{0}\''.format(
+            self.channel_id)
+            )
+        df = pd.DataFrame.from_records([self.channel_data])
+
+        curr_time = get_current_datetime()
+        df['CreatedDate'] = curr_time.split(' ')[0]
+        df['CreatedDatetime'] = curr_time
+
+        return df
+
+
+class TubeChannelMultiWritter():
+    def __init__(self, channel_collection: dict):
+        self.channel_collection = channel_collection
+        self.channel_url_list = self.generate_channel_list()
+
+    def generate_channel_list(self):
+        channel_url_list = []
+        for channel in self.channel_collection['channels']:
+            if channel.get('run'):
+                channel_url_list.append(channel.get('url'))
+        return channel_url_list
+
+    def combine_channel_dataframes(self) -> pd.DataFrame:
+        all_channels_df = pd.DataFrame()
+        ex_channel_ids, ex_channel_names = retrieve_list_of_existing_channels(
+            filename=channel_f
+            )
+        for channel_url in self.channel_url_list:
+            channel = TubeChannelLogger(channel_url=channel_url)
+            id_not_exists = channel.channel_id not in ex_channel_ids
+            name_not_exists = channel.channel_name not in ex_channel_names
+            if id_not_exists and name_not_exists:
+                channel_df = channel.create_dataframe_for_channel()
+                all_channels_df = all_channels_df.append(channel_df)
+            else:
+                print(
+                    "\nChannel: {0} already exists. Skipping...\n".format(
+                        channel.channel_id)
+                    )
+                continue
+        return all_channels_df
+
+    def write_channel_dataframes_to_csv(
+        self,
+        filename: str
+    ) -> None:
+        if not os.path.isfile(filename):
+            pd.DataFrame().to_csv(filename, index=True)
+        all_channels_df = self.combine_channel_dataframes()
+        try:
+            df_channel_history = pd.read_csv(filename, index_col=[0])
+            df_channel_history = df_channel_history.append(all_channels_df)
+            print('\nUpdating metadata file at: {0}\n'.format(filename))
+            df_channel_history.to_csv(filename, index=True)
+        except EmptyDataError:
+            print('\nUpdating metadata file at: {0}\n'.format(filename))
+            all_channels_df.to_csv(filename, index=True)
