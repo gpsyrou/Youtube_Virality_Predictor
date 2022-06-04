@@ -3,7 +3,7 @@
         
         {
             "id": 1,
-            "url": "https://www.youtube.com/channel/UC0WP5P-ufpRfjbNrmOWwLBQ",
+            "url": "https://www.youtube.com/channel/UCF_fDSgPpBQuh1MsUTgIARQ",
             "run": true
         },
         {
@@ -13,8 +13,8 @@
         },
         {
             "id": 3,
-            "url": "https://www.youtube.com/channel/UCy3zgWom-5AGypGX_FVTKpg",
-            "run": true
+            "url": "https://www.youtube.com/channel/UCxE5jEls-T0QtlTHT8lI1lw",
+            "run": false
         },
         {
             "id": 4,
@@ -135,7 +135,33 @@
             "id": 27,
             "url": "https://www.youtube.com/c/EurovisionSongContest",
             "run": true
+        },
+        {
+            "id": 28,
+            "url": "https://www.youtube.com/c/MrBeast6000",
+            "run": true
+        },
+        {
+            "id": 29,
+            "url": "https://www.youtube.com/user/adelevevo",
+            "run": true
+        },
+        {
+            "id": 30,
+            "url": "https://www.youtube.com/channel/UCIPPMRA040LQr5QPyJEbmXA",
+            "run": true
+        },
+        {
+            "id": 31,
+            "url": "https://www.youtube.com/channel/UCOhtMAg7xh8wv_wUHMgFc-Q",
+            "run": true
+        },
+        {
+            "id": 32,
+            "url": "https://www.youtube.com/channel/UCbOCbp5gXL8jigIBZLqMPrw",
+            "run": true
         }
+
 
     ]
 }

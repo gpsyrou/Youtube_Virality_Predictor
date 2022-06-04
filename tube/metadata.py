@@ -345,29 +345,3 @@ class ChannelMetadataCollector(TubeChannelMetaDataRetriever):
             }
 
         return channel_meta_dict
-
-
-t = 'https://www.youtube.com/c/MrBeast6000/'
-z = 'https://www.youtube.com/c/EdSheeran/'
-f = 'https://www.youtube.com/c/NianLi%C3%86/'
-d = 'https://www.youtube.com/channel/UCj_ctckPEilz67WE2-kzYig'
-
-ch = TubeChannelMetaDataRetriever(channel_url=t)
-ch2 = TubeChannelMetaDataRetriever(channel_url=z)
-ch3 = TubeChannelMetaDataRetriever(channel_url=f)
-ch4 = TubeChannelMetaDataRetriever(channel_url=d)
-
-ch.get_number_of_subscribers()
-ch2.get_number_of_subscribers()
-ch3.get_number_of_subscribers()
-ch4.get_number_of_subscribers()
-
-ch.get_channel_name()
-ch2.get_channel_name()
-ch3.get_channel_name()
-ch4.get_channel_name()
-
-ch.get_channel_keywords()
-
-vv = ChannelMetadataCollector(channel_url=t)
-vv.collect_channel_metadata()

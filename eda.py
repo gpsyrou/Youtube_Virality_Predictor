@@ -24,22 +24,35 @@ data_loc_header = 'video_header_metadata.csv'
 data_header = pd.read_csv(data_loc_header)
 data_header.drop(columns=['Unnamed: 0'], inplace=True)
 
+# Load channels data
+data_loc_channels = 'channels_metadata.csv'
+data_channels = pd.read_csv(data_loc_channels)
+data_channels.drop(columns=['Unnamed: 0'], inplace=True)
+
+
 # Merge the dataset
 data = data_header.merge(
     data_lines, 
     on=['channel_id', 'video_id'], 
     how='left', 
     suffixes=("_header", "_lines")
+    ).merge(
+    data_channels,
+    on='channel_id',
+    how='left',
+     suffixes=(None, "_channels")
     )
 
 # Check if join works properly
 assert data_lines.shape[0] == data.shape[0]
 assert (list(data_header['video_id'].unique()) == list(data_lines['video_id'].unique())) & (list(data['video_id'].unique()) == list(data_lines['video_id'].unique()))
 
+
 # Drop Date columns from Header
 data = data.drop(columns=['CreatedDate_header', 'CreatedDatetime_header'])
 del data_lines
 del data_header
+del data_channels
 
 # Compute the ratio of likes/views per day
 data['target'] = data['number_of_likes'] / data['number_of_views']
