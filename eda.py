@@ -1,16 +1,11 @@
 
-import os
-import numpy as np
+from helpers.visualize import (
+    plot_date_change_for_col,
+    plot_change_in_views_and_likes,
+    )
 import pandas as pd
-import matplotlib.pyplot as plt
 import seaborn as sns
 sns.set_style('dark')
-from helpers.df_func import print_dataset_size
-from helpers.visualize import (
-    plot_date_change_for_col, 
-    plot_change_in_views_and_likes,
-    visualize_categorical_feature
-    )
 
 
 # Load lines data
@@ -32,9 +27,9 @@ data_channels.drop(columns=['Unnamed: 0'], inplace=True)
 
 # Merge the dataset
 data = data_header.merge(
-    data_lines, 
-    on=['channel_id', 'video_id'], 
-    how='left', 
+    data_lines,
+    on=['channel_id', 'video_id'],
+    how='left',
     suffixes=("_header", "_lines")
     ).merge(
     data_channels,
@@ -48,7 +43,13 @@ assert (list(data_header['video_id'].unique()) == list(data_lines['video_id'].un
 
 
 # Drop Date columns from Header
-data = data.drop(columns=['CreatedDate_header', 'CreatedDatetime_header', 'CreatedDate', 'CreatedDatetime'])
+data = data.drop(
+    columns=[
+        'CreatedDate_header',
+        'CreatedDatetime_header',
+        'CreatedDate',
+        'CreatedDatetime']
+    )
 del data_lines
 del data_header
 del data_channels
@@ -73,7 +74,7 @@ data['seven_d_avg_views_change'] = data['views_diff'].rolling(7).mean()
 
 
 def get_timeseries_for_video_id(
-        input_df: pd.DataFrame, 
+        input_df: pd.DataFrame,
         video_id: str,
         col: str
 ) -> pd.Series:
@@ -83,45 +84,45 @@ def get_timeseries_for_video_id(
 
 get_timeseries_for_video_id(
     input_df=data, 
-    video_id='sPA3XIbho_A', 
+    video_id='sPA3XIbho_A',
     col='target'
     )
 
 
 plot_date_change_for_col(
     input_df=data, 
-    col='number_of_views', 
-    date_col='CreatedDate_lines', 
+    col='number_of_views',
+    date_col='CreatedDate_lines',
     video_id='sPA3XIbho_A'
     )
 
 plot_date_change_for_col(
     input_df=data, 
-    col='number_of_views', 
-    date_col='CreatedDate_lines', 
+    col='number_of_views',
+    date_col='CreatedDate_lines',
     video_id='oTw8AECmUNA'
     )
 
 plot_date_change_for_col(
-    input_df=data, 
-    col='likes_diff', 
-    date_col='CreatedDate_lines', 
+    input_df=data,
+    col='likes_diff',
+    date_col='CreatedDate_lines',
     video_id='oTw8AECmUNA'
     )
 
 
 plot_date_change_for_col(
-    input_df=data, 
-    col='seven_d_avg_likes_change', 
-    date_col='CreatedDate_lines', 
+    input_df=data,
+    col='seven_d_avg_likes_change',
+    date_col='CreatedDate_lines',
     video_id='oTw8AECmUNA'
     )
 
 
 plot_change_in_views_and_likes(
-    input_df=data, 
-    video_id='3S1jrYq87Zw', 
-    views_col='number_of_views', 
-    likes_col='number_of_likes', 
+    input_df=data,
+    video_id='3S1jrYq87Zw',
+    views_col='number_of_views',
+    likes_col='number_of_likes',
     date_col='CreatedDate_lines'
-    ) 
+    )

@@ -160,8 +160,17 @@
             "id": 32,
             "url": "https://www.youtube.com/channel/UCbOCbp5gXL8jigIBZLqMPrw",
             "run": true
+        },
+        {
+            "id": 33,
+            "url": "https://www.youtube.com/channel/UCzpl23pGTHVYqvKsgY0A-_w",
+            "run": true
+        },
+        {
+            "id": 34,
+            "url": "https://www.youtube.com/channel/UCpTaAz_BxtkUB1qc8JTU_7g",
+            "run": true
         }
-
 
     ]
 }
