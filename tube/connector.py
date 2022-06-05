@@ -29,6 +29,7 @@ CONFIGS_PATH = os.path.join(os.getcwd(), 'config')
 catalog_path = os.path.join(CONFIGS_PATH, 'video_catalog.json')
 params_path = os.path.join(CONFIGS_PATH, 'param.json')
 channels_path = os.path.join(CONFIGS_PATH, 'channel_catalog.json')
+datasets_path = os.path.join(os.getcwd(), 'data')
 
 with open(catalog_path) as video_catalog_json:
     catalog = json.load(video_catalog_json)
@@ -235,6 +236,7 @@ class TubeVideoMultiWritter():
         print('Finished pushing to DB...')
 
     def meta_push_to_db_header(self) -> None:
+        print('Started pushing to DB for Header Table...')
         for video_url in self.video_url_list:
             video = TubeVideoLogger(video_url=video_url)
             video_id = video.get_video_id()
@@ -245,6 +247,7 @@ class TubeVideoMultiWritter():
         print('Finished pushing to DB for Header Table...')
 
     def meta_push_to_db_lines(self) -> None:
+        print('Started pushing to DB for Lines Table...')
         for video_url in self.video_url_list:
             video = TubeVideoLogger(video_url=video_url)
             video.insert_into_lines_table(
@@ -269,6 +272,7 @@ class TubeVideoMultiWritter():
             pd.DataFrame().to_csv(filename, index=True)
         all_videos_df = self.combine_video_dataframes(kind=kind)
         try:
+            print('\nInitiate populate of CSV for {0}...\n'.format(kind))
             df_history = pd.read_csv(filename, index_col=[0])
             df_history = df_history.append(all_videos_df)
             print('\nUpdating metadata file at: {0}\n'.format(filename))
@@ -311,7 +315,7 @@ class TubeChannelMultiWritter():
     def combine_channel_dataframes(self) -> pd.DataFrame:
         all_channels_df = pd.DataFrame()
         ex_channel_ids, ex_channel_names = retrieve_list_of_existing_channels(
-            filename=channel_f
+            filename=os.path.join(datasets_path, channel_f)
             )
         for channel_url in self.channel_url_list:
             channel = TubeChannelLogger(channel_url=channel_url)

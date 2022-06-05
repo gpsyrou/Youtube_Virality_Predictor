@@ -38,7 +38,6 @@ data = data_header.merge(
     )
 
 # Check if join works properly
-assert data_lines.shape[0] == data.shape[0]
 assert (list(data_header['video_id'].unique()) == list(data_lines['video_id'].unique())) & (list(data['video_id'].unique()) == list(data_lines['video_id'].unique()))
 
 
@@ -61,11 +60,11 @@ data['target'] = data['number_of_likes'] / data['number_of_views']
 # Compute the daily change in views and likes
 data['likes_diff'] = data.groupby(['video_id'])['number_of_likes'].transform(
     lambda x: x.diff(periods=1)
-    ) 
+    )
 
 data['views_diff'] = data.groupby(['video_id'])['number_of_views'].transform(
     lambda x: x.diff(periods=1)
-    ) 
+    )
 
 
 # Computing 7-day rolling average
@@ -78,26 +77,26 @@ def get_timeseries_for_video_id(
         video_id: str,
         col: str
 ) -> pd.Series:
-    ts = input_df[input_df['video_id'] == video_id][col]    
+    ts = input_df[input_df['video_id'] == video_id][col]
     return ts
 
 
 get_timeseries_for_video_id(
-    input_df=data, 
+    input_df=data,
     video_id='sPA3XIbho_A',
     col='target'
     )
 
 
 plot_date_change_for_col(
-    input_df=data, 
+    input_df=data,
     col='number_of_views',
     date_col='CreatedDate_lines',
     video_id='sPA3XIbho_A'
     )
 
 plot_date_change_for_col(
-    input_df=data, 
+    input_df=data,
     col='number_of_views',
     date_col='CreatedDate_lines',
     video_id='oTw8AECmUNA'

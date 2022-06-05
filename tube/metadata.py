@@ -14,7 +14,8 @@ from bs4 import element
 from tube.transformer import (transform_pt_format,
                               remove_chars,
                               url_to_bs4,
-                              subscribers_str_to_int)
+                              subscribers_str_to_int
+                              )
 
 
 class TubeVideoMetaDataRetriever:
