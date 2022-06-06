@@ -35,7 +35,8 @@ def plot_change_in_views_and_likes(
     video_id: str,
     views_col: str,
     likes_col: str,
-    date_col: str
+    date_col: str,
+    sharey: bool = False
 ) -> None:
     """ Function to plot the daily changes (based on 'Trending_Date') for
     a numeric column ('col').
@@ -47,7 +48,7 @@ def plot_change_in_views_and_likes(
         1,
         2,
         figsize=(12, 12),
-        sharey=False,
+        sharey=sharey,
         gridspec_kw=dict(width_ratios=[3, 3])
         )
 

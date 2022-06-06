@@ -9,18 +9,19 @@ sns.set_style('dark')
 
 
 # Load lines data
-data_loc_lines = 'video_lines_metadata.csv'
+data_loc_lines = 'data/video_lines_metadata.csv'
 data_lines = pd.read_csv(data_loc_lines)
 data_lines.drop(columns=['Unnamed: 0'], inplace=True)
-
+data_lines.groupby('video_id').size()  # number of samples per video_id
+data_lines = data_lines.sort_values('CreatedDatetime').groupby(['video_id', 'CreatedDate']).tail(1)  ## Take only the last entry per day per video_id
 
 # Load header data
-data_loc_header = 'video_header_metadata.csv'
+data_loc_header = 'data/video_header_metadata.csv'
 data_header = pd.read_csv(data_loc_header)
 data_header.drop(columns=['Unnamed: 0'], inplace=True)
 
 # Load channels data
-data_loc_channels = 'channels_metadata.csv'
+data_loc_channels = 'data/channels_metadata.csv'
 data_channels = pd.read_csv(data_loc_channels)
 data_channels.drop(columns=['Unnamed: 0'], inplace=True)
 
@@ -71,6 +72,12 @@ data['views_diff'] = data.groupby(['video_id'])['number_of_views'].transform(
 data['seven_d_avg_likes_change'] = data['likes_diff'].rolling(7).mean()
 data['seven_d_avg_views_change'] = data['views_diff'].rolling(7).mean()
 
+# Compute z-scores for vies and likes
+from scipy.stats import zscore
+data['z_norm_views'] = zscore(data['number_of_views'])
+data['z_norm_likes'] = zscore(data['number_of_likes'])
+
+
 
 def get_timeseries_for_video_id(
         input_df: pd.DataFrame,
@@ -85,6 +92,13 @@ get_timeseries_for_video_id(
     input_df=data,
     video_id='sPA3XIbho_A',
     col='target'
+    )
+
+
+ts = get_timeseries_for_video_id(
+    input_df=data,
+    video_id='sPA3XIbho_A',
+    col='number_of_views'
     )
 
 
@@ -124,4 +138,13 @@ plot_change_in_views_and_likes(
     views_col='number_of_views',
     likes_col='number_of_likes',
     date_col='CreatedDate_lines'
+    )
+
+plot_change_in_views_and_likes(
+    input_df=data,
+    video_id='3S1jrYq87Zw',
+    views_col='z_norm_views',
+    likes_col='z_norm_likes',
+    date_col='CreatedDate_lines',
+    sharey=False
     )
