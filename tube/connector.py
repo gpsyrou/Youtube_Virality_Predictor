@@ -75,7 +75,8 @@ class TubeVideoLogger(VideoMetadataCollector):
         else:
             raise ValueError('The specified type does not exist')
 
-        print('Creating metadata df for video_id: \'{0}\''.format(
+        print('Creating metadata df of {0} for video_id: \'{1}\''.format(
+            kind,
             self.video_id)
             )
         df = pd.DataFrame.from_records([meta_info_dict])

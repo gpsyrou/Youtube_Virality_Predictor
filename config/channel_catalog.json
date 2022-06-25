@@ -175,9 +175,48 @@
             "id": 35,
             "url": "https://www.youtube.com/channel/UC31hY7kg7CUOBpdyn9d_gYA",
             "run": true
+        },
+        {
+            "id": 36,
+            "url": "https://www.youtube.com/channel/UCwppdrjsBPAZg5_cUwQjfMQ ",
+            "run": true
+        },
+        {
+            "id": 37,
+            "url": "https://www.youtube.com/channel/UCfM3zsQsOnfWNUppiycmBuw",
+            "run": true
+        },
+        {
+            "id": 38,
+            "url": "https://www.youtube.com/c/JYPEntertainment",
+            "run": true
+        },
+        {
+            "id": 39,
+            "url": "https://www.youtube.com/channel/UC_uMv3bNXwapHl8Dzf2p01Q",
+            "run": true
+        },
+        {
+            "id": 40,
+            "url": "https://www.youtube.com/c/AquariumInfo",
+            "run": true
+        },
+        {
+            "id": 41,
+            "url": "https://www.youtube.com/channel/UCqECaJ8Gagnn7YCbPEzWH6g",
+            "run": true
+        },
+        {
+            "id": 42,
+            "url": "https://www.youtube.com/channel/UCw4NZm6hgJ0Gxwep1zBrpfQ",
+            "run": true
+        },
+        {
+            "id": 43,
+            "url": "https://www.youtube.com/channel/UCUs8sGiP4avNaYNVO22INhQ",
+            "run": true
         }
-
-        
-
+            
+                
     ]
 }
