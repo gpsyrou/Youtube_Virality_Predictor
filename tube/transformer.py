@@ -91,3 +91,8 @@ def subscribers_str_to_int(s: str) -> int:
         return float(s.split('k')[0]) * 1000
     else:
         return float(s)
+
+
+def create_youtube_url_from_video_id(video_id: str) -> str:
+    prefix = 'https://youtu.be/'
+    return prefix + video_id

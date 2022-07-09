@@ -70,6 +70,10 @@ del data_lines, data_header, data_channels
 # Compute the ratio of likes/views per day
 data['target'] = data['number_of_likes'] / data['number_of_views']
 
+# Logarithms
+data['log_views'] = np.log(data['number_of_views'])
+data['log_likes'] = np.log(data['number_of_likes'])
+
 
 # Compute the daily change in views and likes
 data['likes_diff'] = data.groupby(['video_id'])['number_of_likes'].transform(
@@ -90,7 +94,7 @@ from scipy.stats import zscore
 data['z_norm_views'] = zscore(data['number_of_views'])
 data['z_norm_likes'] = zscore(data['number_of_likes'])
 
-
+#
 
 def get_timeseries_for_video_id(
         input_df: pd.DataFrame,
@@ -117,16 +121,23 @@ ts = get_timeseries_for_video_id(
 
 plot_date_change_for_col(
     input_df=data,
-    col='number_of_views',
+    col='log_views',
     date_col='CreatedDate_lines',
     video_id='sPA3XIbho_A'
     )
 
 plot_date_change_for_col(
     input_df=data,
-    col='number_of_views',
+    col='log_views',
     date_col='CreatedDate_lines',
     video_id='RjrA-slMoZ4'
+    )
+
+plot_date_change_for_col(
+    input_df=data,
+    col='number_of_views',
+    date_col='CreatedDate_lines',
+    video_id='bNhGDDUnNE8'
     )
 
 plot_date_change_for_col(
@@ -148,8 +159,8 @@ plot_date_change_for_col(
 plot_change_in_views_and_likes(
     input_df=data,
     video_id='RjrA-slMoZ4',
-    views_col='number_of_views',
-    likes_col='number_of_likes',
+    views_col='log_views',
+    likes_col='log_likes',
     date_col='CreatedDate_lines'
     )
 
