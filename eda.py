@@ -4,6 +4,7 @@ from helpers.visualize import (
     plot_change_in_views_and_likes,
     )
 import pandas as pd
+import numpy as np
 import seaborn as sns
 sns.set_style('dark')
 
@@ -15,18 +16,30 @@ data_lines.drop(columns=['Unnamed: 0'], inplace=True)
 data_lines.groupby('video_id').size()  # number of samples per video_id
 data_lines = data_lines.sort_values('CreatedDatetime').groupby(['video_id', 'CreatedDate']).tail(1)  ## Take only the last entry per day per video_id
 
+
+# QC that there is no videos that have duplicate lines for the same day
+assert len(np.where(data_lines.groupby(['video_id', 'CreatedDate']).size() != 1)[0]) == 0
+
 # Load header data
 data_loc_header = 'data/video_header_metadata.csv'
 data_header = pd.read_csv(data_loc_header)
 data_header.drop(columns=['Unnamed: 0'], inplace=True)
+data_header.groupby('video_id').size()  # number of samples per video_id
+data_header = data_header.sort_values('CreatedDatetime').groupby(['video_id']).tail(1)  ## Take only the most recent entry per video_id
+
+assert len(np.where(data_header.groupby(['video_id', 'CreatedDate']).size() != 1)[0]) == 0
+
 
 # Load channels data
 data_loc_channels = 'data/channels_metadata.csv'
 data_channels = pd.read_csv(data_loc_channels)
 data_channels.drop(columns=['Unnamed: 0'], inplace=True)
+data_channels = data_channels.sort_values('CreatedDatetime').groupby(['channel_id']).tail(1)  ## Take only the most recent entry per video_id
+
+assert len(np.where(data_channels.groupby(['channel_id']).size() != 1)[0]) == 0
 
 
-# Merge the dataset
+# Merge the datasets
 data = data_header.merge(
     data_lines,
     on=['channel_id', 'video_id'],
@@ -39,7 +52,7 @@ data = data_header.merge(
     )
 
 # Check if join works properly
-assert (list(data_header['video_id'].unique()) == list(data_lines['video_id'].unique())) & (list(data['video_id'].unique()) == list(data_lines['video_id'].unique()))
+assert (sorted(list(data_header['video_id'].unique())) == sorted(list(data_lines['video_id'].unique()))) & (sorted(list(data['video_id'].unique())) == sorted(list(data_lines['video_id'].unique())))
 
 
 # Drop Date columns from Header
@@ -50,9 +63,9 @@ data = data.drop(
         'CreatedDate',
         'CreatedDatetime']
     )
-del data_lines
-del data_header
-del data_channels
+
+del data_lines, data_header, data_channels
+
 
 # Compute the ratio of likes/views per day
 data['target'] = data['number_of_likes'] / data['number_of_views']
@@ -113,7 +126,7 @@ plot_date_change_for_col(
     input_df=data,
     col='number_of_views',
     date_col='CreatedDate_lines',
-    video_id='oTw8AECmUNA'
+    video_id='RjrA-slMoZ4'
     )
 
 plot_date_change_for_col(
@@ -128,13 +141,13 @@ plot_date_change_for_col(
     input_df=data,
     col='seven_d_avg_likes_change',
     date_col='CreatedDate_lines',
-    video_id='oTw8AECmUNA'
+    video_id='RjrA-slMoZ4'
     )
 
 
 plot_change_in_views_and_likes(
     input_df=data,
-    video_id='3S1jrYq87Zw',
+    video_id='RjrA-slMoZ4',
     views_col='number_of_views',
     likes_col='number_of_likes',
     date_col='CreatedDate_lines'
@@ -142,7 +155,7 @@ plot_change_in_views_and_likes(
 
 plot_change_in_views_and_likes(
     input_df=data,
-    video_id='3S1jrYq87Zw',
+    video_id='RjrA-slMoZ4',
     views_col='z_norm_views',
     likes_col='z_norm_likes',
     date_col='CreatedDate_lines',
